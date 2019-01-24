@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WHULibrarySeat</string>
+    <string name="title_home">主页</string>
+    <string name="title_dashboard">功能</string>
+    <string name="title_notifications">我</string>
+
+    <string name="title_activity_login">登陆图书馆</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>
