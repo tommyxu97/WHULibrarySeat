@@ -17,11 +17,11 @@ public class WHUSeatApi {
     public static final String BUILDING_STATUS = BASE_SEAT_API + "/rest/v2/room/stats2/"; // 1-4
 
     // RESERVE SEAT
-    public static final String ROOM_STATUS = BASE_SEAT_API + "/rest/v2/room/layoutByDate"; // /60/2019-01-19
-    public static final String SELECT_SEAT = BASE_SEAT_API + "/rest/v2/searchSeats"; // /2019-01-19/1200/1320
+    public static final String ROOM_STATUS = BASE_SEAT_API + "/rest/v2/room/layoutByDate/"; // 60/2019-01-19
+    public static final String SELECT_SEAT = BASE_SEAT_API + "/rest/v2/searchSeats/"; // 2019-01-19/1200/1320
 
-    public static final String SEAT_START_TIME = BASE_SEAT_API + "/rest/v2/startTimesForSeat"; // /35117/2019-01-19
-    public static final String SEAT_END_TIME = BASE_SEAT_API + "/rest/v2/endTimesForSeat"; // /35117/2018-12-28/now
+    public static final String SEAT_START_TIME = BASE_SEAT_API + "/rest/v2/startTimesForSeat/"; // 35117/2019-01-19
+    public static final String SEAT_END_TIME = BASE_SEAT_API + "/rest/v2/endTimesForSeat/"; // 35117/2018-12-28/now
 
     public static final String RESERVE = BASE_SEAT_API + "/rest/v2/freeBook"; // POST
     public static final String CANCEL = BASE_SEAT_API + "/rest/v2/cancel/"; // 拼接预约ID

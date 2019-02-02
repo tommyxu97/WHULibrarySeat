@@ -2,8 +2,16 @@ package com.xht97.whulibraryseat.util;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.xht97.whulibraryseat.model.bean.InstantReserve;
 import com.xht97.whulibraryseat.model.bean.Reserve;
 import com.xht97.whulibraryseat.model.bean.ReserveHistory;
+import com.xht97.whulibraryseat.model.bean.Room;
+import com.xht97.whulibraryseat.model.bean.Seat;
+import com.xht97.whulibraryseat.model.bean.SeatTime;
 import com.xht97.whulibraryseat.model.bean.User;
 
 import org.json.JSONArray;
@@ -11,9 +19,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class JsonUtil {
+
+    private static Gson mGson = new Gson();
 
     /**
      * 判断请求是否成功
@@ -63,6 +74,25 @@ public class JsonUtil {
             return "ERROR";
         }
     }
+
+    public static Object stringToObject(String json , Class className){
+        return  mGson.fromJson(json , className) ;
+    }
+
+    public static <T> String objectToString(T object) {
+        return mGson.toJson(object);
+    }
+
+    public static <T> List<T> stringToList(String json ,Class<T> className){
+        List<T> list = new ArrayList<T>();
+        JsonArray array = new JsonParser().parse(json).getAsJsonArray();
+        for(final JsonElement elem :array){
+            list.add(mGson.fromJson(elem, className));
+        }
+        return list ;
+    }
+
+
 
     public static User getUserInfo(String data) {
         try {
@@ -177,7 +207,214 @@ public class JsonUtil {
         }
     }
 
+    public static List<Room> getRoomList(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
 
+            if(isRequestSuccessful(object)) {
+                JSONArray dataArray = object.getJSONArray("data");
+                List<Room> roomList = new ArrayList<>();
+                for(int i = 0; i < dataArray.length(); i++) {
+                    JSONObject roomObject = dataArray.getJSONObject(i);
+                    Room room = new Room();
+                    room.setRoomId(roomObject.getInt("roomId"));
+                    room.setRoom(roomObject.getString("room"));
+                    room.setFloor(roomObject.getInt("floor"));
+                    room.setMaxHour(roomObject.getInt("maxHour"));
+                    room.setReserved(roomObject.getInt("reserved"));
+                    room.setInUse(roomObject.getInt("inUse"));
+                    room.setAway(roomObject.getInt("away"));
+                    room.setTotalSeat(roomObject.getInt("totalSeats"));
+                    room.setFree(roomObject.getInt("free"));
+                    roomList.add(room);
+                }
+                return roomList;
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public static List<Seat> getSeats(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
+
+            if (isRequestSuccessful(object)) {
+                JSONObject layoutObject = object.getJSONObject("data").getJSONObject("layout");
+                List<Seat> seats =  new ArrayList<>();
+
+                Iterator<String> iterator = layoutObject.keys();
+                while (iterator.hasNext()) {
+                    Seat seat = new Seat();
+                    String key = iterator.next();
+                    JSONObject seatObject = layoutObject.getJSONObject(key);
+
+                    if(seatObject.getString("type").equals("seat")) {
+
+                        seat.setLocation(key);
+                        seat.setId(seatObject.getInt("id"));
+                        seat.setName(seatObject.getString("name"));
+                        seat.setType("seat");
+                        seat.setStatus(seatObject.getString("status"));
+                        seat.setWindow(seatObject.getBoolean("window"));
+                        seat.setPower(seatObject.getBoolean("power"));
+                        seat.setComputer(seatObject.getBoolean("computer"));
+                        seat.setLocal(seatObject.getBoolean("local"));
+
+                        // 最后把这个位置加入列表
+                        seats.add(seat);
+                    }
+                }
+
+                return seats;
+            } else {
+                return null;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static int[] getLayoutParameter(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
+
+            if (isRequestSuccessful(object)) {
+                JSONObject dataObject = object.getJSONObject("data");
+                int[] layout = {dataObject.getInt("cols"), dataObject.getInt("rows")};
+                return layout;
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<SeatTime> getSeatStartTime(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
+
+            if (isRequestSuccessful(object)) {
+                JSONArray timeArray = object.getJSONObject("data").getJSONArray("startTimes");
+                List<SeatTime> seatTimes =  new ArrayList<>();
+
+                for (int i = 0; i < timeArray.length(); i++) {
+                    SeatTime seatTime = new SeatTime();
+                    JSONObject timeObject = timeArray.getJSONObject(i);
+                    seatTime.setId(timeObject.getString("id"));
+                    seatTime.setId(timeObject.getString("value"));
+
+                    seatTimes.add(seatTime);
+                }
+                return seatTimes;
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<SeatTime> getSeatEndTime(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
+
+            if (isRequestSuccessful(object)) {
+                JSONArray timeArray = object.getJSONObject("data").getJSONArray("endTimes");
+                List<SeatTime> seatTimes =  new ArrayList<>();
+
+                for (int i = 0; i < timeArray.length(); i++) {
+                    SeatTime seatTime = new SeatTime();
+                    JSONObject timeObject = timeArray.getJSONObject(i);
+                    seatTime.setId(timeObject.getString("id"));
+                    seatTime.setId(timeObject.getString("value"));
+
+                    seatTimes.add(seatTime);
+                }
+                return seatTimes;
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static InstantReserve getInstantReserve(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
+            if (isRequestSuccessful(object)) {
+                InstantReserve reserve = new InstantReserve();
+                JSONObject reserveObject = object.getJSONObject("data");
+                reserve.setId(reserveObject.getInt("id"));
+                reserve.setReceipt(reserveObject.getString("receipt"));
+                reserve.setOnDate(reserveObject.getString("onDate"));
+                reserve.setBegin(reserveObject.getString("begin"));
+                reserve.setEnd(reserveObject.getString("end"));
+                reserve.setLocation(reserveObject.getString("location"));
+                reserve.setCheckedIn(reserveObject.getBoolean("checkedIn"));
+
+                return reserve;
+            } else {
+                return null;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<Seat> getSeatsByTime(String data) {
+        try {
+            JSONObject object = new JSONObject(data);
+
+            if (isRequestSuccessful(object)) {
+                JSONObject layoutObject = object.getJSONObject("data").getJSONObject("seats");
+                List<Seat> seats =  new ArrayList<>();
+
+                Iterator<String> iterator = layoutObject.keys();
+                while (iterator.hasNext()) {
+                    Seat seat = new Seat();
+                    String key = iterator.next();
+                    JSONObject seatObject = layoutObject.getJSONObject(key);
+
+                    if(seatObject.getString("type").equals("seat")) {
+
+                        seat.setLocation(key);
+                        seat.setId(seatObject.getInt("id"));
+                        seat.setName(seatObject.getString("name"));
+                        seat.setType("seat");
+                        seat.setStatus(seatObject.getString("status"));
+                        seat.setWindow(seatObject.getBoolean("window"));
+                        seat.setPower(seatObject.getBoolean("power"));
+                        seat.setComputer(seatObject.getBoolean("computer"));
+                        seat.setLocal(seatObject.getBoolean("local"));
+
+                        // 最后把这个位置加入列表
+                        seats.add(seat);
+                    }
+                }
+
+                return seats;
+            } else {
+                return null;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     private static boolean isRequestSuccessful(JSONObject object) {

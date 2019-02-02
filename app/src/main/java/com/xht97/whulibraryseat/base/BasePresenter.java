@@ -46,6 +46,10 @@ public abstract class BasePresenter<T> {
          */
         void onSuccess(T data);
 
+        void onSuccess(T data, int[] parameters);
+
+        void onSuccess(T data, String[] strings);
+
         /**
          * Description: 请求失败时调用
          * CreateTime: 2019/1/20

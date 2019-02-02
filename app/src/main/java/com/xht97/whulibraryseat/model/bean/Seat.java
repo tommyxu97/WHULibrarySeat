@@ -10,6 +10,8 @@ public class Seat {
     private boolean power;
     private boolean computer;
     private boolean local;
+    // 为了方便实现布局选座的功能添加的成员变量
+    private String location;
 
     public int getId() {
         return id;
@@ -73,5 +75,13 @@ public class Seat {
 
     public void setLocal(boolean local) {
         this.local = local;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
