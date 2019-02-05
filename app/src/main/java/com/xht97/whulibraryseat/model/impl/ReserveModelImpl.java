@@ -71,6 +71,31 @@ public class ReserveModelImpl implements IReserveModel {
     }
 
     /**
+     * 由于经过测试，获取场馆的目前信息可以不需要token进行
+     * 返回List<Room>
+     */
+    @Override
+    public void getBuildingStatusWithoutToken(int buildingId, final BasePresenter.BaseRequestCallback<List<Room>> callback) {
+        httpUtil.get(WHUSeatApi.BUILDING_STATUS + buildingId, new HttpUtil.HttpCallBack() {
+            @Override
+            public void onSuccess(String data) {
+                List<Room> rooms = JsonUtil.getRoomList(data);
+                if (rooms != null) {
+                    callback.onSuccess(rooms);
+                } else {
+                    callback.onError(JsonUtil.getErrorMessage(data));
+                }
+            }
+
+            @Override
+            public void onError(String msg) {
+                super.onError(msg);
+                callback.onError(msg);
+            }
+        });
+    }
+
+    /**
      * 根据用户选择的场馆，查询目前的座位情况
      * 返回值为当前该场馆所有的位置信息，以及当前楼层的布局信息
      */

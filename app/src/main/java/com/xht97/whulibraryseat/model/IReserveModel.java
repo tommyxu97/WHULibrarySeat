@@ -15,6 +15,8 @@ public interface IReserveModel {
 
     void getBuildingStatus(int buildingId, BasePresenter.BaseRequestCallback<List<Room>> callback);
 
+    void getBuildingStatusWithoutToken(int buildingId, BasePresenter.BaseRequestCallback<List<Room>> callback);
+
     void getRoomStatus(int roomId, String date, BasePresenter.BaseRequestCallback<List<Seat>> callback);
 
     void getSeatStartTime(int seatId, String date, BasePresenter.BaseRequestCallback<List<SeatTime>> callback);

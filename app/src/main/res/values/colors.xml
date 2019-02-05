@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#4285F4</color>
+    <color name="colorPrimaryDark">#4285F4</color>
+    <color name="colorAccent">#FFC400</color>
 
-    <color name="black_overlay">#66000000</color>
+    <!-- Google ic_login_logo Color -->
+    <color name="google_blue">#4285F4</color>
+    <color name="google_green">#34A853</color>
+    <color name="google_yellow">#FBBC05</color>
+    <color name="google_red">#EA4335</color>
+
+    <!-- Google Apps Color -->
+    <color name="app_blue">#4285f4</color>
+    <color name="app_blue_dark">#3367D6</color>
+    <color name="app_green">#0F9D58</color>
+    <color name="app_green_dark">#0B8043</color>
+    <color name="app_yellow">#F4B400</color>
+    <color name="app_yellow_dark">#F09300</color>
+    <color name="app_red">#DB4437</color>
+    <color name="app_black">#000000</color>
+    <color name="app_white">#FFFFFF</color>
 </resources>

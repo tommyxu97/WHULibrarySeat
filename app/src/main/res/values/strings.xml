@@ -4,7 +4,12 @@
     <string name="title_dashboard">功能</string>
     <string name="title_notifications">我</string>
 
-    <string name="title_activity_login">登陆图书馆</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_login">登录图书馆</string>
+    <string name="login_title_1">武大图书馆选座系统</string>
+    <string name="login_title_2">Welcome back!</string>
+    <string name="login_agreement">登录表示您同意本应用用户使用协议</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
