@@ -45,7 +45,10 @@ public class HttpUtil {
 
     // 不带Token的直接GET请求
     public void get(String url, final HttpCallBack callBack){
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder()
+                .removeHeader("User-Agent")
+                .addHeader("User-Agent", "doSingle/11 CFNetwork/893.14.2 Darwin/17.3.0")
+                .url(url).build();
         onStart(callBack);
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -66,6 +69,8 @@ public class HttpUtil {
     // 带Token的GET请求
     public void getWithToken(String token, String url, final HttpCallBack callBack) {
         Request request = new Request.Builder()
+                .removeHeader("User-Agent")
+                .addHeader("User-Agent", "doSingle/11 CFNetwork/893.14.2 Darwin/17.3.0")
                 .addHeader("token", token)
                 .url(url).build();
         onStart(callBack);
@@ -97,6 +102,8 @@ public class HttpUtil {
         }
         RequestBody body = builder.build();
         Request request = new Request.Builder()
+                .removeHeader("User-Agent")
+                .addHeader("User-Agent", "doSingle/11 CFNetwork/893.14.2 Darwin/17.3.0")
                 .addHeader("token", token)
                 .url(url).post(body).build();
         onStart(callBack);

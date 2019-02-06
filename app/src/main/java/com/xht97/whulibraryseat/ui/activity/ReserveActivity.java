@@ -1,5 +1,6 @@
 package com.xht97.whulibraryseat.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,15 +16,10 @@ public class ReserveActivity extends BaseActivity {
     private TextView mTextMessage;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     protected void initView() {
-        setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+        setContentView(R.layout.activity_main);
+        mTextMessage = findViewById(R.id.message);
 
         BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
                 = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -46,6 +42,9 @@ public class ReserveActivity extends BaseActivity {
         };
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     @Override

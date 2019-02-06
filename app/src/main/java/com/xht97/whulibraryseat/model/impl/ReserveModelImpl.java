@@ -171,6 +171,10 @@ public class ReserveModelImpl implements IReserveModel {
         });
     }
 
+    /**
+     * 根据用户所选择的位置id，日期，开始时间和结束时间来预定位置
+     * 返回为一个InstantReserve对象
+     */
     @Override
     public void reserveSeat(int seatId, String date, String startTime, String endTime, final BasePresenter.BaseRequestCallback<InstantReserve> callback) {
         Map<String, String> map = new HashMap<>();
@@ -200,6 +204,10 @@ public class ReserveModelImpl implements IReserveModel {
         });
     }
 
+    /**
+     * 取消位置预约
+     * 返回为一个字符串
+     */
     @Override
     public void cancelSeat(int bookId, final BasePresenter.BaseRequestCallback<String> callback) {
         httpUtil.getWithToken(AppDataUtil.getTokenFromLocal(), WHUSeatApi.CANCEL + bookId, new HttpUtil.HttpCallBack() {
@@ -220,6 +228,10 @@ public class ReserveModelImpl implements IReserveModel {
         });
     }
 
+    /**
+     * 根据开始时间和结束时间来选择座位
+     * 返回为List<Seat>
+     */
     @Override
     public void selectSeatByTime(int buildingId, int roomId, String date, String startTime, String endTime, final BasePresenter.BaseRequestCallback<List<Seat>> callback) {
         Map<String, String> map = new HashMap<>();

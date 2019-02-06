@@ -9,7 +9,7 @@ public class AppDataUtil {
 
     public static String getTokenFromLocal() {
         SharedPreferences sharedPreferences = MyApplication.getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("token", "ERROR");
+        return sharedPreferences.getString("token", "NEYIJFUPX101195712");
     }
 
 }

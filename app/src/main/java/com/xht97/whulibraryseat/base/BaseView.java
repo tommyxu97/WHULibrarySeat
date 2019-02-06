@@ -6,7 +6,7 @@ public interface BaseView {
 
     void hideLoading();
 
-    void showError();
+    void showMessage(String message);
 
     void showEmptyView();
 }

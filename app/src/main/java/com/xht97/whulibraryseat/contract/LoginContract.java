@@ -12,13 +12,18 @@ public interface LoginContract {
 
         String getPassword();
 
+        void showErrorFocus(int which, String message);
+
     }
 
     abstract class AbstractLoginPresenter extends BasePresenter<LoginActivity> {
 
         public abstract void login(String studentId, String password);
 
-        public abstract void savePassword(String studentId, String password);
+        public abstract void setAutoLogin(boolean flag);
+
+        public abstract boolean getAutoLogin();
+
     }
 
 }

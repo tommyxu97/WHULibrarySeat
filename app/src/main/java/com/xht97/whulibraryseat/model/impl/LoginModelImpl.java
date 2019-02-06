@@ -7,24 +7,30 @@ import com.xht97.whulibraryseat.api.WHUSeatApi;
 import com.xht97.whulibraryseat.base.BasePresenter;
 import com.xht97.whulibraryseat.base.MyApplication;
 import com.xht97.whulibraryseat.model.ILoginModel;
+import com.xht97.whulibraryseat.util.AppDataUtil;
 import com.xht97.whulibraryseat.util.HttpUtil;
 import com.xht97.whulibraryseat.util.JsonUtil;
 
 public class LoginModelImpl implements ILoginModel {
 
-    private SharedPreferences preferences = MyApplication.getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+    private SharedPreferences data = MyApplication.getContext().getSharedPreferences("Data", Context.MODE_PRIVATE);
+    private SharedPreferences account = MyApplication.getContext().getSharedPreferences("Account", Context.MODE_PRIVATE);
 
+    /**
+     * 根据用户的用户名和密码进行登录操作
+     * 登录成功后，会在回调中返回登陆成功，并且将token存储到sharedpref中
+     */
     @Override
     public void login(String userId, String password, final BasePresenter.BaseRequestCallback<String> callback) {
 
         HttpUtil httpUtil = HttpUtil.getInstance();
         String url = WHUSeatApi.USER_LOGIN + "username=" + userId + "&password=" + password;
-        httpUtil.getWithToken("NEYIJFUPX101195712", url, new HttpUtil.HttpCallBack() {
+        httpUtil.getWithToken(AppDataUtil.getTokenFromLocal(), url, new HttpUtil.HttpCallBack() {
             @Override
             public void onSuccess(String data) {
                 String token = JsonUtil.getToken(data);
                 if(!token.equals("ERROR")) {
-                    if (preferences.edit().putString("token", token).commit()) {
+                    if (LoginModelImpl.this.data.edit().putString("token", token).commit()) {
                         callback.onSuccess("登陆成功");
                     }
                 } else {
@@ -41,29 +47,65 @@ public class LoginModelImpl implements ILoginModel {
 
     }
 
+    /**
+     * 用户登出
+     * 暂时没有实现
+     */
     @Override
     public void logout(BasePresenter.BaseRequestCallback<String> callback) {
 
     }
 
+    /**
+     * 在本地sharedpref中存储主账号和密码
+     * 结果返回boolean变量
+     */
     @Override
     public boolean savePassword(String studentId, String password) {
 
-        return preferences.edit().putString(studentId, password).commit();
+        boolean flag1 = account.edit().putString("id1", studentId).commit();
+        boolean flag2 = account.edit().putString("pwd1", password).commit();
+
+        return flag1 && flag2;
+    }
+
+    /**
+     * 根据用户名获取主密码
+     * 返回boolean变量
+     */
+    @Override
+    public String getPassword() {
+
+        return account.getString("pwd1", "ERROR");
 
     }
 
+    /**
+     * 根据用户名删除主密码
+     * 返回boolean变量
+     */
     @Override
-    public String getPassword(String studentId) {
+    public boolean deletePassword() {
 
-        return preferences.getString(studentId, "ERROR");
+        return account.edit().remove("pwd1").commit();
 
     }
 
+    /**
+     * 设置是否开启自动登录
+     * 返回boolean变量
+     */
     @Override
-    public boolean deletePassword(String studentId) {
+    public boolean setAutoLogin(boolean flag) {
+        return data.edit().putBoolean("autoLogin", flag).commit();
+    }
 
-        return preferences.edit().remove(studentId).commit();
-
+    /**
+     * 获取自动登录的本地配置
+     * 返回boolean变量
+     */
+    @Override
+    public boolean getAutoLogin() {
+        return data.getBoolean("autoLogin", true);
     }
 }
