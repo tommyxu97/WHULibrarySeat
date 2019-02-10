@@ -30,7 +30,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        initView();
+        initView(inflater, container, savedInstanceState);
 
         initData();
 
@@ -48,7 +48,7 @@ public abstract class BaseFragment<V, T extends BasePresenter<V>> extends Fragme
 
     }
 
-    protected abstract void initView();
+    protected abstract void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
 
     protected abstract void initData();
 

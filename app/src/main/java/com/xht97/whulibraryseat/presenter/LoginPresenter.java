@@ -1,8 +1,12 @@
 package com.xht97.whulibraryseat.presenter;
 
+import android.content.Intent;
+
+import com.xht97.whulibraryseat.app.StaticVar;
 import com.xht97.whulibraryseat.contract.LoginContract;
 import com.xht97.whulibraryseat.model.impl.LoginModelImpl;
 import com.xht97.whulibraryseat.ui.activity.LoginActivity;
+import com.xht97.whulibraryseat.util.AppDataUtil;
 
 public class LoginPresenter extends LoginContract.AbstractLoginPresenter {
 
@@ -20,6 +24,7 @@ public class LoginPresenter extends LoginContract.AbstractLoginPresenter {
             return;
         }
 
+        setAutoLogin(true);
         // 检验完学号与密码的格式正确后开始网络请求进行登录
         getView().showLoading();
         model.login(studentId, password, new BaseRequestCallback<String>() {
@@ -35,7 +40,10 @@ public class LoginPresenter extends LoginContract.AbstractLoginPresenter {
                     getView().showMessage("保存用户名与密码到本地失败");
                 }
 
-                // todo：登陆成功后返回主页面并通知其更新数据
+                Intent intent = new Intent();
+                intent.putExtra(StaticVar.LOGIN_SUCCESS, true);
+                getView().setResult(android.app.Activity.RESULT_OK, intent);
+                getView().finish();
             }
 
             @Override
@@ -55,5 +63,12 @@ public class LoginPresenter extends LoginContract.AbstractLoginPresenter {
     @Override
     public boolean getAutoLogin() {
         return model.getAutoLogin();
+    }
+
+    public void fillPassword() {
+        if (AppDataUtil.isPasswordExists()) {
+            getView().getStudentId().setText(AppDataUtil.getMainId());
+            getView().getPasswordView().setText(AppDataUtil.getMainPassword());
+        }
     }
 }

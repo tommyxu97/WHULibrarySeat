@@ -9,7 +9,18 @@
     <string name="login_title_2">Welcome back!</string>
     <string name="login_agreement">登录表示您同意本应用用户使用协议</string>
 
+    <string name="reserve_room_item_text">当前可用座位数：</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="about_app_name">武大图书馆自习助手</string>
+    <string name="about_app_version">Beta V0.1(内测版)</string>
+    <string name="about_author">Haotian.X</string>
+    <string name="about_team">Haotian.X Wenxiang.S</string>
+    <string name="about_contact">Contact with Us</string>
+    <string name="about_email">i@xht97.cn</string>
+    <string name="about_home">https://xht97.cn</string>
+    <string name="about_github">Github id@TommyXu97</string>
 
 </resources>

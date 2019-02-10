@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_weekend_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_battery_charging_full_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -44,9 +44,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_menu_seat_in_use" />
-                                      <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="bdbdbd" />
+                                      <entry key="outputName" value="ic_menu_charge" />
+                                      <entry key="themeColor" value="4285f4" />
                                     </map>
                                   </option>
                                 </PersistentState>

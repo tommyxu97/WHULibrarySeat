@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import com.xht97.whulibraryseat.api.WHUSeatApi;
 import com.xht97.whulibraryseat.base.BasePresenter;
-import com.xht97.whulibraryseat.base.MyApplication;
+import com.xht97.whulibraryseat.app.MyApplication;
 import com.xht97.whulibraryseat.model.ILoginModel;
 import com.xht97.whulibraryseat.util.AppDataUtil;
 import com.xht97.whulibraryseat.util.HttpUtil;
@@ -70,8 +70,15 @@ public class LoginModelImpl implements ILoginModel {
     }
 
     /**
-     * 根据用户名获取主密码
-     * 返回boolean变量
+     * 获取本地存储的主账号
+     */
+    @Override
+    public String getStudentId() {
+        return account.getString("id1", "ERROR");
+    }
+
+    /**
+     * 获取本地存储的主密码
      */
     @Override
     public String getPassword() {
@@ -81,7 +88,7 @@ public class LoginModelImpl implements ILoginModel {
     }
 
     /**
-     * 根据用户名删除主密码
+     * 删除主密码
      * 返回boolean变量
      */
     @Override

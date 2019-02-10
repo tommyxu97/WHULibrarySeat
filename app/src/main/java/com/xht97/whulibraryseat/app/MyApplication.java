@@ -1,4 +1,4 @@
-package com.xht97.whulibraryseat.base;
+package com.xht97.whulibraryseat.app;
 
 import android.app.Application;
 import android.content.Context;

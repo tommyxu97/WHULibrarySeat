@@ -12,6 +12,8 @@ public interface ILoginModel {
 
     boolean savePassword(String studentId, String password);
 
+    String getStudentId();
+
     String getPassword();
 
     boolean deletePassword();

@@ -130,7 +130,11 @@ public class HttpUtil {
         }
     }
 
-    private void onSuccess(final HttpCallBack callBack,final String data){
+    private void onSuccess(final HttpCallBack callBack, final String data){
+
+        // 打印日志
+        printLog(data);
+
         if(callBack != null){
             handler.post(new Runnable() {
                 @Override
@@ -153,6 +157,10 @@ public class HttpUtil {
         }
     }
 
+    private void printLog(String string) {
+        Log.d("HttpUtil", string);
+    }
+
     // HttpCallBack的抽象接口
     public static abstract class HttpCallBack{
         //开始
@@ -165,5 +173,4 @@ public class HttpUtil {
             Log.d("HttpUtil", msg);
         }
     }
-
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IReserveModel {
 
-    void getAvailableDate(BasePresenter.BaseRequestCallback<List<String>> callback);
+    void getAvailableDate(BasePresenter.BaseRequestCallback<List<List>> callback);
 
     void getBuildingStatus(int buildingId, BasePresenter.BaseRequestCallback<List<Room>> callback);
 

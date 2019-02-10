@@ -4,7 +4,6 @@ import com.xht97.whulibraryseat.api.WHUSeatApi;
 import com.xht97.whulibraryseat.base.BasePresenter;
 import com.xht97.whulibraryseat.model.IReserveModel;
 import com.xht97.whulibraryseat.model.bean.InstantReserve;
-import com.xht97.whulibraryseat.model.bean.Reserve;
 import com.xht97.whulibraryseat.model.bean.Room;
 import com.xht97.whulibraryseat.model.bean.Seat;
 import com.xht97.whulibraryseat.model.bean.SeatTime;
@@ -21,17 +20,17 @@ public class ReserveModelImpl implements IReserveModel {
     private HttpUtil httpUtil = HttpUtil.getInstance();
 
     /**
-     * 获取目前可选座位的日期
-     * 返回为String[]
+     * 获取目前可选座位的日期和楼栋信息
+     * 返回值为List<List>
      */
     @Override
-    public void getAvailableDate(final BasePresenter.BaseRequestCallback<List<String>> callback) {
+    public void getAvailableDate(final BasePresenter.BaseRequestCallback<List<List>> callback) {
         httpUtil.getWithToken(AppDataUtil.getTokenFromLocal(), WHUSeatApi.BUILDING_INFO, new HttpUtil.HttpCallBack() {
             @Override
             public void onSuccess(String data) {
-                List<String> dates = JsonUtil.getDateList(data);
-                if (dates != null) {
-                    callback.onSuccess(dates);
+                List<List> lists = JsonUtil.getDateList(data);
+                if (lists != null) {
+                    callback.onSuccess(lists);
                 } else {
                     callback.onError(JsonUtil.getErrorMessage(data));
                 }

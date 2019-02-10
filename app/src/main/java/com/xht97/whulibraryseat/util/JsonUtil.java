@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.xht97.whulibraryseat.model.bean.Building;
 import com.xht97.whulibraryseat.model.bean.InstantReserve;
 import com.xht97.whulibraryseat.model.bean.Reserve;
 import com.xht97.whulibraryseat.model.bean.ReserveHistory;
@@ -19,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -118,17 +121,34 @@ public class JsonUtil {
         }
     }
 
-    public static List<String> getDateList(String data) {
+    public static List<List> getDateList(String data) {
         try {
             JSONObject object = new JSONObject(data);
             if (isRequestSuccessful(object)) {
+                List<List> lists = new ArrayList<>();
+
                 JSONObject dataObject = object.getJSONObject("data");
-                JSONArray datesArray = object.getJSONArray("dates");
-                List<String> list = new ArrayList<>();
+
+                List<String> dates = new ArrayList<>();
+                JSONArray datesArray = dataObject.getJSONArray("dates");
                 for(int i = 0; i<datesArray.length(); i++) {
-                    list.add(datesArray.getString(i));
+                    dates.add(datesArray.getString(i));
                 }
-                return list;
+                lists.add(dates);
+
+                List<Building> buildings = new ArrayList<>();
+                JSONArray buildingArray = dataObject.getJSONArray("buildings");
+                for (int i = 0; i<buildingArray.length(); i++) {
+                    JSONArray array = buildingArray.getJSONArray(i);
+                    Building building = new Building();
+                    building.setId(array.getInt(0));
+                    building.setName(array.getString(1));
+                    building.setFloors(array.getInt(2));
+                    buildings.add(building);
+                }
+                lists.add(buildings);
+
+                return lists;
             } else {
                 return null;
             }
@@ -143,8 +163,13 @@ public class JsonUtil {
             JSONObject object = new JSONObject(data);
             if (isRequestSuccessful(object)) {
 
-                JSONArray dataArray = object.getJSONArray("data");
                 List<Reserve> reserveList = new ArrayList<>();
+                // Fixbugs:当目前没有预约的情况
+                if (object.get("data") == JSONObject.NULL) {
+                    return reserveList;
+                }
+
+                JSONArray dataArray = object.getJSONArray("data");
                 for(int i = 0; i < dataArray.length(); i++) {
                     JSONObject reserveObject = dataArray.getJSONObject(i);
                     Reserve reserve = new Reserve();
@@ -180,8 +205,12 @@ public class JsonUtil {
             JSONObject object = new JSONObject(data);
             if (isRequestSuccessful(object)) {
 
-                JSONArray dataArray = object.getJSONObject("data").getJSONArray("reservations");
                 List<ReserveHistory> reserveHistoryList = new ArrayList<>();
+                if (object.getJSONObject("data").get("reservations") == JSONObject.NULL) {
+                    return reserveHistoryList;
+                }
+
+                JSONArray dataArray = object.getJSONObject("data").getJSONArray("reservations");
                 for(int i = 0; i < dataArray.length(); i++) {
                     JSONObject reserveObject = dataArray.getJSONObject(i);
                     ReserveHistory reserveHistory = new ReserveHistory();
@@ -244,9 +273,12 @@ public class JsonUtil {
             JSONObject object = new JSONObject(data);
 
             if (isRequestSuccessful(object)) {
-                JSONObject layoutObject = object.getJSONObject("data").getJSONObject("layout");
                 List<Seat> seats =  new ArrayList<>();
+                if (object.getJSONObject("data").get("layout") == JSONObject.NULL) {
+                    return seats;
+                }
 
+                JSONObject layoutObject = object.getJSONObject("data").getJSONObject("layout");
                 Iterator<String> iterator = layoutObject.keys();
                 while (iterator.hasNext()) {
                     Seat seat = new Seat();
@@ -269,6 +301,14 @@ public class JsonUtil {
                         seats.add(seat);
                     }
                 }
+
+                // BugFixed: 根据座位的名字排序，在显示在界面上时更利于用户选择
+                Collections.sort(seats, new Comparator<Seat>() {
+                    @Override
+                    public int compare(Seat o1, Seat o2) {
+                        return Integer.parseInt(o1.getName()) - Integer.parseInt(o2.getName());
+                    }
+                });
 
                 return seats;
             } else {
@@ -303,9 +343,12 @@ public class JsonUtil {
             JSONObject object = new JSONObject(data);
 
             if (isRequestSuccessful(object)) {
-                JSONArray timeArray = object.getJSONObject("data").getJSONArray("startTimes");
                 List<SeatTime> seatTimes =  new ArrayList<>();
+                if (object.getJSONObject("data").get("startTimes") == JSONObject.NULL) {
+                    return seatTimes;
+                }
 
+                JSONArray timeArray = object.getJSONObject("data").getJSONArray("startTimes");
                 for (int i = 0; i < timeArray.length(); i++) {
                     SeatTime seatTime = new SeatTime();
                     JSONObject timeObject = timeArray.getJSONObject(i);
@@ -329,9 +372,12 @@ public class JsonUtil {
             JSONObject object = new JSONObject(data);
 
             if (isRequestSuccessful(object)) {
-                JSONArray timeArray = object.getJSONObject("data").getJSONArray("endTimes");
                 List<SeatTime> seatTimes =  new ArrayList<>();
+                if (object.getJSONObject("data").get("endTimes") == JSONObject.NULL) {
+                    return seatTimes;
+                }
 
+                JSONArray timeArray = object.getJSONObject("data").getJSONArray("endTimes");
                 for (int i = 0; i < timeArray.length(); i++) {
                     SeatTime seatTime = new SeatTime();
                     JSONObject timeObject = timeArray.getJSONObject(i);
@@ -379,9 +425,12 @@ public class JsonUtil {
             JSONObject object = new JSONObject(data);
 
             if (isRequestSuccessful(object)) {
-                JSONObject layoutObject = object.getJSONObject("data").getJSONObject("seats");
                 List<Seat> seats =  new ArrayList<>();
+                if (object.getJSONObject("data").get("seats") == JSONObject.NULL) {
+                    return seats;
+                }
 
+                JSONObject layoutObject = object.getJSONObject("data").getJSONObject("seats");
                 Iterator<String> iterator = layoutObject.keys();
                 while (iterator.hasNext()) {
                     Seat seat = new Seat();

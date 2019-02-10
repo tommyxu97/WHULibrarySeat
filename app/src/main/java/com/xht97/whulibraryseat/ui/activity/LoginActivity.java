@@ -20,7 +20,7 @@ import com.xht97.whulibraryseat.presenter.LoginPresenter;
 public class LoginActivity extends BaseActivity<LoginActivity, LoginPresenter> implements LoginContract.ILoginView{
 
     public static int STUDENTID_INPUT = 0;
-    public static int PASSWORD_INPUT =1;
+    public static int PASSWORD_INPUT = 1;
 
     private EditText studentId;
     private EditText password;
@@ -61,7 +61,8 @@ public class LoginActivity extends BaseActivity<LoginActivity, LoginPresenter> i
 
     @Override
     protected void initData() {
-
+        // 如果本地有存储密码，直接填充好
+        mPresenter.fillPassword();
     }
 
     @Override
@@ -115,5 +116,33 @@ public class LoginActivity extends BaseActivity<LoginActivity, LoginPresenter> i
                 password.setError(Html.fromHtml("<font color='white'>"+message+"</font>", 1));
                 break;
         }
+    }
+
+    public EditText getStudentId() {
+        return studentId;
+    }
+
+    public EditText getPasswordView() {
+        return password;
+    }
+
+    public CheckBox getCheckBox() {
+        return checkBox;
+    }
+
+    public Button getLoginButton() {
+        return loginButton;
+    }
+
+    public TextView getUserAgreement() {
+        return userAgreement;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public LinearLayout getLinearLayout() {
+        return linearLayout;
     }
 }
