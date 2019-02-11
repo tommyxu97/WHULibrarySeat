@@ -8,6 +8,9 @@ public interface MainContract {
 
     interface IMainView extends BaseView {
 
+        void setFabFunction(int type);
+
+        void setUiMode(int mode);
     }
 
     abstract class AbstractMainPresenter extends BasePresenter<MainActivity> {

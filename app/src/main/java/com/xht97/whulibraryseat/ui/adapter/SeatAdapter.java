@@ -45,15 +45,22 @@ public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Seat seat = seats.get(i);
 
+        // BugFixed: 解决RecyclerView的ViewHolder复用带来的bug
         if (seat.getStatus().equals("FREE")) {
             viewHolder.logoView.setImageResource(R.drawable.ic_menu_seat_free);
+        } else {
+            viewHolder.logoView.setImageResource(R.drawable.ic_menu_seat_in_use);
         }
         viewHolder.seatIdView.setText(seat.getName());
         if (!seat.isWindow()) {
             viewHolder.windowView.setVisibility(View.GONE);
+        } else {
+            viewHolder.windowView.setVisibility(View.VISIBLE);
         }
         if (!seat.isPower()) {
             viewHolder.chargeView.setVisibility(View.GONE);
+        } else {
+            viewHolder.chargeView.setVisibility(View.VISIBLE);
         }
 
         final int position = i;

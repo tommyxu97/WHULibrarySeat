@@ -353,7 +353,7 @@ public class JsonUtil {
                     SeatTime seatTime = new SeatTime();
                     JSONObject timeObject = timeArray.getJSONObject(i);
                     seatTime.setId(timeObject.getString("id"));
-                    seatTime.setId(timeObject.getString("value"));
+                    seatTime.setValue(timeObject.getString("value"));
 
                     seatTimes.add(seatTime);
                 }
@@ -382,7 +382,7 @@ public class JsonUtil {
                     SeatTime seatTime = new SeatTime();
                     JSONObject timeObject = timeArray.getJSONObject(i);
                     seatTime.setId(timeObject.getString("id"));
-                    seatTime.setId(timeObject.getString("value"));
+                    seatTime.setValue(timeObject.getString("value"));
 
                     seatTimes.add(seatTime);
                 }

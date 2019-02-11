@@ -54,43 +54,55 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/view_reserve_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="3dp"
             android:background="@color/lightGray"
             app:layout_constraintTop_toBottomOf="@id/ll_reserve_bar" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_reserve_room"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/sfl_reserve_room"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/ll_reserve_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_reserve_bar"
+            app:layout_constraintTop_toBottomOf="@+id/view_reserve_line"
             app:layout_constraintVertical_bias="0.0">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_reserve_room"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_reserve_seat"
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/sfl_reserve_seat"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/ll_reserve_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_reserve_bar"
+            app:layout_constraintTop_toBottomOf="@+id/view_reserve_line"
             app:layout_constraintVertical_bias="0.0">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_reserve_seat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <LinearLayout
             android:id="@+id/ll_reserve_status"

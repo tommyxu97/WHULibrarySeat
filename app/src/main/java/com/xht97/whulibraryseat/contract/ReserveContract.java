@@ -8,7 +8,9 @@ public interface ReserveContract {
 
     interface IReserveView extends BaseView {
 
+        void stopSeat();
 
+        void setRoomMode();
 
     }
 
@@ -27,6 +29,8 @@ public interface ReserveContract {
         public abstract void getSeatEndTime();
 
         public abstract void reserve();
+
+        public abstract void stopSeat();
 
         public abstract void setAdapter();
 

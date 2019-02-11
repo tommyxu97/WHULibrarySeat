@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.xht97.whulibraryseat"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "Beta V0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -34,4 +34,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
     // CircleImageView-Show Circle Image View
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    // Alert
+    implementation 'com.tapadoo.android:alerter:2.0.6'
 }

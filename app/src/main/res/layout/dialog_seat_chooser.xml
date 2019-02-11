@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/dialog_shape"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:text="@string/reserve_seat_reserve_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reserve_seat_reserve_start" />
+
+        <Spinner
+            android:id="@+id/sp_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </Spinner>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reserve_seat_reserve_end" />
+
+        <Spinner
+            android:id="@+id/sp_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </Spinner>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_reserve_action"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/bt_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="@string/reserve_seat_reserve_button"
+        android:textColor="@color/white"
+        android:layout_margin="8dp"
+        android:paddingStart="24dp"
+        android:paddingTop="3dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="3dp" />
+
+</LinearLayout>

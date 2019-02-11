@@ -1,5 +1,6 @@
 package com.xht97.whulibraryseat.presenter;
 
+import android.support.design.button.MaterialButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.Spinner;
 
+import com.tapadoo.alerter.Alerter;
+import com.xht97.whulibraryseat.R;
+import com.xht97.whulibraryseat.app.MyApplication;
 import com.xht97.whulibraryseat.contract.ReserveContract;
 import com.xht97.whulibraryseat.model.bean.Building;
 import com.xht97.whulibraryseat.model.bean.InstantReserve;
@@ -17,12 +23,16 @@ import com.xht97.whulibraryseat.model.bean.Room;
 import com.xht97.whulibraryseat.model.bean.Seat;
 import com.xht97.whulibraryseat.model.bean.SeatTime;
 import com.xht97.whulibraryseat.model.impl.ReserveModelImpl;
+import com.xht97.whulibraryseat.model.impl.SeatActionModelImpl;
 import com.xht97.whulibraryseat.model.impl.UserInfoModelImpl;
+import com.xht97.whulibraryseat.ui.activity.MainActivity;
 import com.xht97.whulibraryseat.ui.adapter.BuildingAdapter;
 import com.xht97.whulibraryseat.ui.adapter.DateAdapter;
 import com.xht97.whulibraryseat.ui.adapter.RoomAdapter;
 import com.xht97.whulibraryseat.ui.adapter.SeatAdapter;
+import com.xht97.whulibraryseat.ui.adapter.SeatTimeAdapter;
 import com.xht97.whulibraryseat.ui.listener.ClickListener;
+import com.xht97.whulibraryseat.ui.weight.SeatChooserDialog;
 import com.xht97.whulibraryseat.util.AppDataUtil;
 
 import java.util.ArrayList;
@@ -31,13 +41,16 @@ import java.util.List;
 public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
     private final String TAG = "ReserveFragment";
+    private MainActivity activity;
 
     private ReserveModelImpl reserveModel = new ReserveModelImpl();
     private UserInfoModelImpl userModel = new UserInfoModelImpl();
+    private SeatActionModelImpl seatActionModel = new SeatActionModelImpl();
 
     private RoomAdapter roomAdapter;
     private SeatAdapter seatAdapter;
 
+    private int currentReserveId;
     private int[] roomLayout;
 
     // 记录用户所选的选项
@@ -57,6 +70,8 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 if (!data.isEmpty()) {
                     // 取出当前用户正在执行的预约
                     Reserve reserve = data.get(0);
+
+                    currentReserveId = reserve.getId();
                     String location = reserve.getLocation();
                     String startTime = reserve.getBegin().replace(" ", "");
                     String endTime = reserve.getEnd().replace(" ", "");
@@ -67,6 +82,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
                     getView().getStatusTitle().setText(title);
                     getView().getStatusDetail().setText(detail);
+
+                    // 将主页上的FAB改为停止使用座位的点击模式
+                    setFabStopUsing();
                 } else {
                     getView().getStatusTitle().setText("您目前没有正在使用的预约");
                     getView().getStatusDetail().setText("小提示：正在使用的座位会在这里显示哦");
@@ -83,6 +101,8 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
     @Override
     public void setAvailableTime() {
+        activity = (MainActivity) getView().getActivity();
+
         reserveModel.getAvailableDate(new BaseRequestCallback<List<List>>() {
             @Override
             public void onSuccess(final List<List> lists) {
@@ -120,6 +140,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                             building = buildingObject.getId();
                             AppDataUtil.putLastSelectedBuilding(building);
                             // 更新场馆时刷新页面
+                            getView().showLoading();
                             getRooms();
                         }
 
@@ -148,7 +169,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 super.onSuccess(data);
                 roomAdapter.updateData(data);
                 getView().hideLoading();
-                getView().getRoomView().setVisibility(View.VISIBLE);
+                getView().getRoomLayout().setRefreshing(false);
+                getView().getRoomLayout().setVisibility(View.VISIBLE);
+                activity.setUiMode(MainActivity.ROOM_MODE);
             }
 
             @Override
@@ -169,7 +192,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 roomLayout = layout;
                 seatAdapter.updateData(data);
                 getView().hideLoading();
-                getView().getSeatView().setVisibility(View.VISIBLE);
+                getView().getSeatLayout().setRefreshing(false);
+                getView().getSeatLayout().setVisibility(View.VISIBLE);
+                activity.setUiMode(MainActivity.SEAT_MODE);
             }
 
             @Override
@@ -218,14 +243,65 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             @Override
             public void onSuccess(InstantReserve data) {
                 super.onSuccess(data);
+                String onDate = data.getOnDate().replace(" ", "");
+                String begin = data.getBegin().replace(" ", "");
+                String end = data.getEnd().replace(" ", "");
+                String location = data.getLocation().replace(" ", "");
+
+                String detail = location + "\n" + onDate + "," + begin + "-" + end;
+
+                Alerter.create(activity)
+                        .setTitle("已经成功为您预约座位~")
+                        .setText(detail)
+                        .setDuration(10000)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        })
+                        .show();
+
+                if (data.isCheckedIn()) {
+                    setCurrentReserve();
+                }
+
+                getView().hideLoading();
+                getView().getSeatLayout().setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError(String message) {
                 super.onError(message);
                 getView().showMessage(message);
+
+                // 预约出错时返回到显示座位列表的页面
+                getView().hideLoading();
+                getView().getSeatLayout().setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void stopSeat() {
+        if (currentReserveId != 0) {
+            seatActionModel.stop(new BaseRequestCallback<String>() {
+                @Override
+                public void onSuccess(String data) {
+                    super.onSuccess(data);
+                    getView().showMessage("停止使用座位成功");
+                    // 停止使用后立即更新当前用户使用座位预约的状态
+                    setCurrentReserve();
+                    setFabLogin();
+                }
+
+                @Override
+                public void onError(String message) {
+                    super.onError(message);
+                    getView().showMessage(message);
+                }
+            });
+        }
     }
 
     @Override
@@ -263,20 +339,114 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         seatAdapter.setOnItemClickListener(new ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Seat seat = seatAdapter.getSeatByPosition(position);
+                final Seat seat = seatAdapter.getSeatByPosition(position);
                 seatId = seat.getId();
 
                 Log.d(TAG, "用户选中了座位：" + seat.getId() + "，座位号为：" + seat.getName());
-                // todo 点击完成后并弹出对话框让用户选择时间
+
+                // 当用户选中一个座位，弹出对话框让用户选择开始时间和结束时间，并预约座位
+                final SeatChooserDialog dialog = new SeatChooserDialog(activity);
+
+                final Spinner startTimeSpinner = dialog.getStartTime();
+                final Spinner endTimeSpinner = dialog.getEndTime();
+                Button reserveButton = dialog.getButton();
+
+                reserveModel.getSeatStartTime(seatId, date, new BaseRequestCallback<List<SeatTime>>() {
+                    @Override
+                    public void onSuccess(List<SeatTime> data) {
+                        super.onSuccess(data);
+                        final SeatTimeAdapter seatTimeAdapter1 = new SeatTimeAdapter(activity, data);
+                        startTimeSpinner.setAdapter(seatTimeAdapter1);
+
+                        startTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                SeatTime seatTime = seatTimeAdapter1.getSeatTimeByPosition(position);
+                                startTime = seatTime.getId();
+
+                                reserveModel.getSeatEndTime(seatId, date, startTime, new BaseRequestCallback<List<SeatTime>>() {
+                                    @Override
+                                    public void onSuccess(List<SeatTime> data) {
+                                        super.onSuccess(data);
+                                        final SeatTimeAdapter seatTimeAdapter2 = new SeatTimeAdapter(activity, data);
+                                        endTimeSpinner.setAdapter(seatTimeAdapter2);
+
+                                        endTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                            @Override
+                                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                                endTime = seatTimeAdapter2.getSeatTimeByPosition(position).getId();
+
+                                                // 到此处已经完成了预约一个座位所需的所有参数，当此时用户点击预约按钮时，向系统发起预约
+                                            }
+
+                                            @Override
+                                            public void onNothingSelected(AdapterView<?> parent) {
+
+                                            }
+                                        });
+
+                                    }
+
+                                    @Override
+                                    public void onError(String message) {
+                                        super.onError(message);
+                                        getView().showMessage(message);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        super.onError(message);
+                        getView().showMessage(message);
+                    }
+                });
+
+                reserveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if ((startTime != null) && (endTime != null)) {
+                            // 点击预约按钮后发起预约，对话框消失并且页面显示为正在加载
+                            reserve();
+                            dialog.dismiss();
+                            getView().showLoading();
+                        }
+                    }
+                });
+
+                // 初始化完成对话框后展示出来
+                dialog.show();
             }
 
             @Override
             public void onItemLongClick(int position, View v) {
-
+                getView().showMessage("Seat Name:" + seatAdapter.getSeatByPosition(position).getName()
+                        + ",Seat Id:" + seatId);
             }
         });
         seatView.setLayoutManager(layoutManager2);
         seatView.setAdapter(seatAdapter);
         seatView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void setFabStopUsing() {
+        // 将主页上的FAB改成TO_LOGIN模式
+        if (activity != null) {
+            activity.setFabFunction(MainActivity.FAB_TO_LOGIN);
+        }
+    }
+
+    private void setFabLogin() {
+        // 将主页上的FAB改成STOP模式
+        if (activity != null) {
+            activity.setFabFunction(MainActivity.FAB_STOP_SEAT);
+        }
     }
 }

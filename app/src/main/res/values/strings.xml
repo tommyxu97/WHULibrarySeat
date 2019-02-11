@@ -10,8 +10,11 @@
     <string name="login_agreement">登录表示您同意本应用用户使用协议</string>
 
     <string name="reserve_room_item_text">当前可用座位数：</string>
+    <string name="reserve_seat_reserve_title">请选择座位开始与结束时间</string>
+    <string name="reserve_seat_reserve_start">开始时间：</string>
+    <string name="reserve_seat_reserve_end">结束时间：</string>
+    <string name="reserve_seat_reserve_button">提交预约</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="about_app_name">武大图书馆自习助手</string>

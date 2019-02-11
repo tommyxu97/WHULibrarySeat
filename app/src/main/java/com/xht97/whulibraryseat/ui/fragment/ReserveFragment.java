@@ -3,6 +3,7 @@ package com.xht97.whulibraryseat.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,8 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
     private Spinner dateSpinner;
     private Spinner buildingSpinner;
 
+    private SwipeRefreshLayout roomLayout;
+    private SwipeRefreshLayout seatLayout;
     private RecyclerView roomView;
     private RecyclerView seatView;
 
@@ -44,11 +47,27 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
         bar = mRootView.findViewById(R.id.ll_reserve_bar);
         dateSpinner = mRootView.findViewById(R.id.sp_date);
         buildingSpinner = mRootView.findViewById(R.id.sp_building);
+        roomLayout = mRootView.findViewById(R.id.sfl_reserve_room);
+        seatLayout = mRootView.findViewById(R.id.sfl_reserve_seat);
         roomView = mRootView.findViewById(R.id.rv_reserve_room);
         seatView = mRootView.findViewById(R.id.rv_reserve_seat);
         statusTitle = mRootView.findViewById(R.id.tv_reserve_status_title);
         statusDetail = mRootView.findViewById(R.id.tv_reserve_status_detail);
 
+        roomLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+        seatLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+        roomLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.getRooms();
+            }
+        });
+        seatLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.getSeats();
+            }
+        });
     }
 
     @Override
@@ -72,8 +91,8 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
     public void showLoading() {
         progressBar.setVisibility(View.VISIBLE);
 
-        roomView.setVisibility(View.INVISIBLE);
-        seatView.setVisibility(View.INVISIBLE);
+        roomLayout.setVisibility(View.INVISIBLE);
+        seatLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -83,12 +102,23 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showEmptyView() {
 
+    }
+
+    @Override
+    public void stopSeat() {
+        mPresenter.stopSeat();
+    }
+
+    @Override
+    public void setRoomMode() {
+        roomLayout.setVisibility(View.VISIBLE);
+        seatLayout.setVisibility(View.INVISIBLE);
     }
 
     public ProgressBar getProgressBar() {
@@ -105,6 +135,14 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
 
     public Spinner getBuildingSpinner() {
         return buildingSpinner;
+    }
+
+    public SwipeRefreshLayout getRoomLayout() {
+        return roomLayout;
+    }
+
+    public SwipeRefreshLayout getSeatLayout() {
+        return seatLayout;
     }
 
     public RecyclerView getRoomView() {
