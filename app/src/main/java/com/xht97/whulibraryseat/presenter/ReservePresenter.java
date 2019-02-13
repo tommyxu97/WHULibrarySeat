@@ -1,6 +1,5 @@
 package com.xht97.whulibraryseat.presenter;
 
-import android.support.design.button.MaterialButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +12,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.tapadoo.alerter.Alerter;
-import com.xht97.whulibraryseat.R;
-import com.xht97.whulibraryseat.app.MyApplication;
 import com.xht97.whulibraryseat.contract.ReserveContract;
 import com.xht97.whulibraryseat.model.bean.Building;
 import com.xht97.whulibraryseat.model.bean.InstantReserve;
@@ -55,7 +52,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
     // 记录用户所选的选项
     private String date;
-    private int building = AppDataUtil.getLastSelectedBuilding();
+    private int buildingId = AppDataUtil.getLastSelectedBuilding();
     private int roomId;
     private int seatId;
     private String startTime;
@@ -130,15 +127,15 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
                     // 设置可选的场馆
                     // 默认为上次选取的场馆
-                    int buildingIndex = building - 1;
+                    int buildingIndex = buildingId - 1;
                     BuildingAdapter buildingAdapter = new BuildingAdapter(getView().getActivity(), buildings);
                     getView().getBuildingSpinner().setAdapter(buildingAdapter);
                     getView().getBuildingSpinner().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             Building buildingObject = buildings.get(position);
-                            building = buildingObject.getId();
-                            AppDataUtil.putLastSelectedBuilding(building);
+                            buildingId = buildingObject.getId();
+                            AppDataUtil.putLastSelectedBuilding(buildingId);
                             // 更新场馆时刷新页面
                             getView().showLoading();
                             getRooms();
@@ -163,7 +160,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
     @Override
     public void getRooms() {
-        reserveModel.getBuildingStatus(building, new BaseRequestCallback<List<Room>>() {
+        reserveModel.getBuildingStatus(buildingId, new BaseRequestCallback<List<Room>>() {
             @Override
             public void onSuccess(List<Room> data) {
                 super.onSuccess(data);
@@ -248,7 +245,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 String end = data.getEnd().replace(" ", "");
                 String location = data.getLocation().replace(" ", "");
 
-                String detail = location + "\n" + onDate + "," + begin + "-" + end;
+                String detail = "座位详细信息：\n" + location + "\n" + onDate + "," + begin + "-" + end;
 
                 Alerter.create(activity)
                         .setTitle("已经成功为您预约座位~")
@@ -278,6 +275,23 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 // 预约出错时返回到显示座位列表的页面
                 getView().hideLoading();
                 getView().getSeatLayout().setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public void getSeatsByTime() {
+        reserveModel.selectSeatByTime(buildingId, roomId, date, startTime, endTime, new BaseRequestCallback<List<Seat>>() {
+            @Override
+            public void onSuccess(List<Seat> data) {
+                super.onSuccess(data);
+
+                // TODO: 实现按时间筛选座位
+            }
+
+            @Override
+            public void onError(String message) {
+                super.onError(message);
             }
         });
     }
@@ -351,12 +365,19 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 final Spinner endTimeSpinner = dialog.getEndTime();
                 Button reserveButton = dialog.getButton();
 
+                final SeatTimeAdapter seatTimeAdapter1 = new SeatTimeAdapter(activity, new ArrayList<SeatTime>());
+                startTimeSpinner.setAdapter(seatTimeAdapter1);
+                final SeatTimeAdapter seatTimeAdapter2 = new SeatTimeAdapter(activity, new ArrayList<SeatTime>());
+                endTimeSpinner.setAdapter(seatTimeAdapter2);
+                startTimeSpinner.setEnabled(false);
+                endTimeSpinner.setEnabled(false);
+
                 reserveModel.getSeatStartTime(seatId, date, new BaseRequestCallback<List<SeatTime>>() {
                     @Override
                     public void onSuccess(List<SeatTime> data) {
                         super.onSuccess(data);
-                        final SeatTimeAdapter seatTimeAdapter1 = new SeatTimeAdapter(activity, data);
-                        startTimeSpinner.setAdapter(seatTimeAdapter1);
+                        startTimeSpinner.setEnabled(true);
+                        seatTimeAdapter1.updateData(data);
 
                         startTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -364,12 +385,13 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                                 SeatTime seatTime = seatTimeAdapter1.getSeatTimeByPosition(position);
                                 startTime = seatTime.getId();
 
+                                endTimeSpinner.setEnabled(false);
                                 reserveModel.getSeatEndTime(seatId, date, startTime, new BaseRequestCallback<List<SeatTime>>() {
                                     @Override
                                     public void onSuccess(List<SeatTime> data) {
                                         super.onSuccess(data);
-                                        final SeatTimeAdapter seatTimeAdapter2 = new SeatTimeAdapter(activity, data);
-                                        endTimeSpinner.setAdapter(seatTimeAdapter2);
+                                        seatTimeAdapter2.updateData(data);
+                                        endTimeSpinner.setEnabled(true);
 
                                         endTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                             @Override

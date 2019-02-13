@@ -30,7 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar.FitSystemWindows"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".ui.activity.AboutActivity" />
-        <activity android:name=".ui.activity.SettingActivity"></activity>
+        <activity android:name=".ui.activity.SettingActivity" />
     </application>
 
 </manifest>

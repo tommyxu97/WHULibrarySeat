@@ -2,29 +2,34 @@ package com.xht97.whulibraryseat.ui.fragment;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.xht97.whulibraryseat.R;
+import com.xht97.whulibraryseat.base.BaseFragment;
+import com.xht97.whulibraryseat.presenter.FunctionPresenter;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class FunctionFragment extends Fragment {
+public class FunctionFragment extends BaseFragment<FunctionFragment, FunctionPresenter> {
 
 
     public FunctionFragment() {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_function, container, false);
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mRootView = inflater.inflate(R.layout.fragment_function, container, false);
     }
 
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected FunctionPresenter createPresenter() {
+        return new FunctionPresenter();
+    }
 }

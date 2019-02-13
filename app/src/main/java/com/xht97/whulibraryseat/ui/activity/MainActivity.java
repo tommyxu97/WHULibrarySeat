@@ -166,7 +166,6 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
                     if (reserveFragment == null) {
                         initFragment();
                     }
-                    // TODO:通知三个碎片更新数据
                 }
         }
     }

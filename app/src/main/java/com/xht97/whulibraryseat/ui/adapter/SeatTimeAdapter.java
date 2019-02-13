@@ -24,6 +24,7 @@ public class SeatTimeAdapter extends BaseAdapter {
 
     public void updateData(List<SeatTime> data) {
         seatTimes = data;
+        notifyDataSetChanged();
     }
 
     @Override

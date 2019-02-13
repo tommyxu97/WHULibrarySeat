@@ -10,8 +10,9 @@ public interface MeContract {
 
     }
 
-    public abstract class AbstractMePresenter extends BasePresenter<MeFragment> {
+    abstract class AbstractMePresenter extends BasePresenter<MeFragment> {
 
+        public abstract void updateUserData();
     }
 
 }

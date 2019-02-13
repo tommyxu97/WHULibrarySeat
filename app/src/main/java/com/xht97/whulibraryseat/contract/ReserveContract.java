@@ -30,6 +30,8 @@ public interface ReserveContract {
 
         public abstract void reserve();
 
+        public abstract void getSeatsByTime();
+
         public abstract void stopSeat();
 
         public abstract void setAdapter();

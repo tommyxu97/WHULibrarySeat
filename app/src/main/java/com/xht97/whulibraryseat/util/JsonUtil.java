@@ -181,9 +181,10 @@ public class JsonUtil {
                     reserve.setLocation(reserveObject.getString("location"));
                     reserve.setBegin(reserveObject.getString("begin"));
                     reserve.setEnd(reserveObject.getString("end"));
-                    reserve.setActualBegin(reserveObject.getString("actualBegin"));
-                    reserve.setAwayBegin(reserveObject.getString("awayBegin"));
-                    reserve.setAwayEnd(reserveObject.getString("awayEnd"));
+                    // 暂时注释，等待测试
+//                    reserve.setActualBegin(reserveObject.getString("actualBegin"));
+//                    reserve.setAwayBegin(reserveObject.getString("awayBegin"));
+//                    reserve.setAwayEnd(reserveObject.getString("awayEnd"));
                     reserve.setUserEnded(reserveObject.getBoolean("userEnded"));
                     reserve.setMessage(reserveObject.getString("message"));
                     reserveList.add(reserve);
@@ -218,8 +219,16 @@ public class JsonUtil {
                     reserveHistory.setDate(reserveObject.getString("date"));
                     reserveHistory.setBegin(reserveObject.getString("begin"));
                     reserveHistory.setEnd(reserveObject.getString("end"));
-                    reserveHistory.setAwayBegin(reserveObject.getString("awayBegin"));
-                    reserveHistory.setAwayEnd(reserveObject.getString("awayEnd"));
+                    if (reserveObject.get("awayBegin") == JSONObject.NULL) {
+                        reserveHistory.setAwayBegin(null);
+                    } else {
+                        reserveHistory.setAwayBegin(reserveObject.getString("awayBegin"));
+                    }
+                    if (reserveObject.get("awayEnd") == JSONObject.NULL) {
+                        reserveHistory.setAwayEnd(null);
+                    } else {
+                        reserveHistory.setAwayEnd(reserveObject.getString("awayEnd"));
+                    }
                     reserveHistory.setLoc(reserveObject.getString("loc"));
                     reserveHistory.setStat(reserveObject.getString("stat"));
                     reserveHistoryList.add(reserveHistory);

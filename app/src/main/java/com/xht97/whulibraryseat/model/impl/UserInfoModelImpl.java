@@ -94,7 +94,7 @@ public class UserInfoModelImpl implements IUserInfoModel {
         httpUtil.getWithToken(AppDataUtil.getTokenFromLocal(), WHUSeatApi.USER_VIOLATION_HISTORY, new HttpUtil.HttpCallBack() {
             @Override
             public void onSuccess(String data) {
-                // TODO
+                // TODO: 暂时未获取官方API违约详情的信息接口，待完善
             }
         });
     }
