@@ -121,6 +121,11 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
         seatLayout.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    public void updateCurrentReserve() {
+        mPresenter.setCurrentReserve();
+    }
+
     public ProgressBar getProgressBar() {
         return progressBar;
     }

@@ -1,7 +1,9 @@
 package com.xht97.whulibraryseat.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import com.xht97.whulibraryseat.base.BasePresenter;
 import com.xht97.whulibraryseat.model.bean.ReserveHistory;
 import com.xht97.whulibraryseat.model.impl.ReserveModelImpl;
 import com.xht97.whulibraryseat.model.impl.UserInfoModelImpl;
+import com.xht97.whulibraryseat.ui.activity.MainActivity;
 import com.xht97.whulibraryseat.ui.adapter.ReserveHistoryAdapter;
 
 import java.util.ArrayList;
@@ -25,6 +28,9 @@ public class ReserveHistoryFragment extends Fragment {
     private final ReserveModelImpl reserveModel = new ReserveModelImpl();
 
     private ReserveHistoryAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private MainActivity activity;
 
     /**
      * 这个Fragment不使用包含Presenter的MVP模式
@@ -39,65 +45,56 @@ public class ReserveHistoryFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_reserve_history, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.rv_reserve_history);
+        swipeRefreshLayout = rootView.findViewById(R.id.sfl_reserve_history);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ReserveHistoryAdapter(getActivity(), new ArrayList<ReserveHistory>());
-        adapter.setOnButtonClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReserveHistory history = (ReserveHistory) v.getTag();
-                reserveModel.cancelSeat(history.getId(), new BasePresenter.BaseRequestCallback<String>() {
-                    @Override
-                    public void onSuccess(String data) {
-                        super.onSuccess(data);
-                        Toast.makeText(getContext(), "取消作为预约成功", Toast.LENGTH_SHORT).show();
-                        initData();
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        super.onError(message);
-                        Toast.makeText(getContext(), "取消预约失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+        adapter.bindFragment(this);
         recyclerView.setAdapter(adapter);
 
-        userInfoModel.getReserveHistory(new BasePresenter.BaseRequestCallback<List<ReserveHistory>>() {
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onSuccess(List<ReserveHistory> data) {
-                super.onSuccess(data);
-                adapter.updateData(data);
-            }
-
-            @Override
-            public void onError(String message) {
-                super.onError(message);
-                Toast.makeText(getContext(), "获取用户历史预约记录失败", Toast.LENGTH_SHORT).show();
+            public void onRefresh() {
+                initData();
             }
         });
 
         initData();
 
-
         return rootView;
     }
 
-    private void initData() {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        activity = (MainActivity) getActivity();
+    }
+
+    public void initData() {
         userInfoModel.getReserveHistory(new BasePresenter.BaseRequestCallback<List<ReserveHistory>>() {
             @Override
             public void onSuccess(List<ReserveHistory> data) {
                 super.onSuccess(data);
                 adapter.updateData(data);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onError(String message) {
                 super.onError(message);
                 Toast.makeText(getContext(), "获取用户历史预约记录失败", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
 
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public MainActivity getMainActivity() {
+        return activity;
+    }
 }

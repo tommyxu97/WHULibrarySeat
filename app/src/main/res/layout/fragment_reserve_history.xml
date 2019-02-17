@@ -5,11 +5,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.ReserveHistoryFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_reserve_history"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sfl_reserve_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_reserve_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

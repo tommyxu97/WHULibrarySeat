@@ -74,14 +74,16 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     String endTime = reserve.getEnd().replace(" ", "");
                     String status = reserve.getStatus();
 
-                    String title = "您正在使用的座位为：" + "(" + status + ")";
+                    String title = "您正在使用的座位：" + "(状态为" + status + ")";
                     String detail = location + "，" + startTime + "-" + endTime;
 
                     getView().getStatusTitle().setText(title);
                     getView().getStatusDetail().setText(detail);
 
                     // 将主页上的FAB改为停止使用座位的点击模式
-                    setFabStopUsing();
+                    if (reserve.getStatus().equals("CHECKIN")) {
+                        setFabStopUsing();
+                    }
                 } else {
                     getView().getStatusTitle().setText("您目前没有正在使用的预约");
                     getView().getStatusDetail().setText("小提示：正在使用的座位会在这里显示哦");
@@ -236,6 +238,10 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
     @Override
     public void reserve() {
+        // 如果开始时间选择的是现在，则参数为-1
+        if (startTime.equals("now")) {
+            startTime = "-1";
+        }
         reserveModel.reserveSeat(seatId, date, startTime, endTime, new BaseRequestCallback<InstantReserve>() {
             @Override
             public void onSuccess(InstantReserve data) {
@@ -245,7 +251,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 String end = data.getEnd().replace(" ", "");
                 String location = data.getLocation().replace(" ", "");
 
-                String detail = "座位详细信息：\n" + location + "\n" + onDate + "," + begin + "-" + end;
+                String detail = "座位详细信息：\n" + location + "\n" + onDate + "，" + begin + "-" + end;
 
                 Alerter.create(activity)
                         .setTitle("已经成功为您预约座位~")
@@ -259,9 +265,11 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                         })
                         .show();
 
-                if (data.isCheckedIn()) {
-                    setCurrentReserve();
-                }
+//                if (data.isCheckedIn()) {
+//                    setCurrentReserve();
+//                }
+
+                setCurrentReserve();
 
                 getView().hideLoading();
                 getView().getSeatLayout().setVisibility(View.VISIBLE);
@@ -376,6 +384,10 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     @Override
                     public void onSuccess(List<SeatTime> data) {
                         super.onSuccess(data);
+                        if (data.size() == 0) {
+                            getView().showMessage("无可用时间");
+                            return;
+                        }
                         startTimeSpinner.setEnabled(true);
                         seatTimeAdapter1.updateData(data);
 
@@ -459,16 +471,16 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
     }
 
     private void setFabStopUsing() {
-        // 将主页上的FAB改成TO_LOGIN模式
+        // 设置主页面上的FAB为停止使用的状态
         if (activity != null) {
-            activity.setFabFunction(MainActivity.FAB_TO_LOGIN);
+            activity.setFabFunction(MainActivity.FAB_STOP_SEAT);
         }
     }
 
     private void setFabLogin() {
-        // 将主页上的FAB改成STOP模式
+        // 设置主页面上的FAB为登录按钮的状态
         if (activity != null) {
-            activity.setFabFunction(MainActivity.FAB_STOP_SEAT);
+            activity.setFabFunction(MainActivity.FAB_TO_LOGIN);
         }
     }
 }

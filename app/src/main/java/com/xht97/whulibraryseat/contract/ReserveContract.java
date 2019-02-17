@@ -12,6 +12,8 @@ public interface ReserveContract {
 
         void setRoomMode();
 
+        void updateCurrentReserve();
+
     }
 
     abstract class AbstractReservePresenter extends BasePresenter<ReserveFragment> {
@@ -35,7 +37,6 @@ public interface ReserveContract {
         public abstract void stopSeat();
 
         public abstract void setAdapter();
-
     }
 
 }

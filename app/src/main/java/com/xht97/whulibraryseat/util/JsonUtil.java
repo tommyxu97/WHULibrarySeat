@@ -2,10 +2,6 @@ package com.xht97.whulibraryseat.util;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.xht97.whulibraryseat.model.bean.Building;
 import com.xht97.whulibraryseat.model.bean.InstantReserve;
 import com.xht97.whulibraryseat.model.bean.Reserve;
@@ -26,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class JsonUtil {
-
-    private static Gson mGson = new Gson();
 
     /**
      * 判断请求是否成功
@@ -77,25 +71,6 @@ public class JsonUtil {
             return "ERROR";
         }
     }
-
-    public static Object stringToObject(String json , Class className){
-        return  mGson.fromJson(json , className) ;
-    }
-
-    public static <T> String objectToString(T object) {
-        return mGson.toJson(object);
-    }
-
-    public static <T> List<T> stringToList(String json ,Class<T> className){
-        List<T> list = new ArrayList<T>();
-        JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-        for(final JsonElement elem :array){
-            list.add(mGson.fromJson(elem, className));
-        }
-        return list ;
-    }
-
-
 
     public static User getUserInfo(String data) {
         try {

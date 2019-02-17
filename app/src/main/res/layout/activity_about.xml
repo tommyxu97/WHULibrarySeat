@@ -26,7 +26,7 @@
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:src="@mipmap/ic_launcher_round"
+                android:src="@mipmap/ic_launcher"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
@@ -50,14 +50,14 @@
                 android:layout_width="260dp"
                 android:layout_height="1dp"
                 android:background="#BDBDBD"
-                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_gravity="center_horizontal"/>
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_author"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"/>-->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -104,14 +104,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/about_home"
+                android:text="@string/about_github"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/about_github"
+                android:text="@string/about_thanks"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"/>

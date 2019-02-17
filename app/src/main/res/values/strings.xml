@@ -4,6 +4,9 @@
     <string name="title_dashboard">功能</string>
     <string name="title_notifications">我</string>
 
+    <string name="menu_setting">设置</string>
+    <string name="menu_about">关于</string>
+
     <string name="title_activity_login">登录图书馆</string>
     <string name="login_title_1">武大图书馆选座系统</string>
     <string name="login_title_2">Welcome back!</string>
@@ -15,15 +18,15 @@
     <string name="reserve_seat_reserve_end">结束时间：</string>
     <string name="reserve_seat_reserve_button">提交预约</string>
 
-    <string name="me_default_title">请点击右下角按钮登录</string>
+    <string name="me_default_title">加载中，请稍等</string>
 
     <string name="about_app_name">武大图书馆自习助手</string>
     <string name="about_app_version">Beta V0.1(内测版)</string>
     <string name="about_author">Haotian.X</string>
     <string name="about_team">Haotian.X Wenxiang.S</string>
     <string name="about_contact">Contact with Us</string>
-    <string name="about_email">i@xht97.cn</string>
-    <string name="about_home">https://xht97.cn</string>
+    <string name="about_email">Email(Feedback):i@xht97.cn</string>
     <string name="about_github">Github id@TommyXu97</string>
+    <string name="about_thanks">致谢：Open Source Code Library/武大官方微信公众号</string>
 
 </resources>

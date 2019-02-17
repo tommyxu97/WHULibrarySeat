@@ -142,7 +142,7 @@ public class HttpUtil {
     private void onSuccess(final HttpCallBack callBack, final String data) {
 
         // 打印日志
-        // printLog(data);
+        printLog(data);
 
         if (callBack != null) {
             handler.post(new Runnable() {

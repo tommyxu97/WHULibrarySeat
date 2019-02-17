@@ -1,16 +1,15 @@
 package com.xht97.whulibraryseat.ui.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -20,7 +19,6 @@ import com.xht97.whulibraryseat.R;
 import com.xht97.whulibraryseat.base.BaseActivity;
 import com.xht97.whulibraryseat.app.StaticVar;
 import com.xht97.whulibraryseat.contract.MainContract;
-import com.xht97.whulibraryseat.model.bean.Reserve;
 import com.xht97.whulibraryseat.presenter.MainPresenter;
 import com.xht97.whulibraryseat.ui.fragment.FunctionFragment;
 import com.xht97.whulibraryseat.ui.fragment.MeFragment;
@@ -64,6 +62,8 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         floatingActionButton = findViewById(R.id.fab_main);
         progressBar = findViewById(R.id.pb_main);
 
+        floatingActionButton.setOnClickListener(new FabToLoginListener());
+
         // 如果用户没有登录，则直接跳转登录页(例如用户第一次打开软件，直接不初始化碎片并显示空页面)
         if (!(AppDataUtil.isAutoLogin() && AppDataUtil.isPasswordExists())) {
             isLogin = false;
@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
             return;
         }
 
-        floatingActionButton.setOnClickListener(new FabToLoginListener());
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
     }
 
     @Override
@@ -83,8 +83,8 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         if (!isLogin) {
             return;
         }
-        //mPresenter.updateToken();
-        initFragment();
+        mPresenter.updateToken();
+        // initFragment();
     }
 
     @Override
@@ -170,6 +170,27 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Toast.makeText(this, "暂时未完成", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.action_about) {
+            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
     /**
      * 初始化三个碎片
      */
@@ -185,12 +206,21 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         switchFragment(reserveFragment).commit();
+                        if (floatingActionButton.getVisibility() == View.INVISIBLE) {
+                            floatingActionButton.show();
+                        }
                         return true;
                     case R.id.navigation_dashboard:
                         switchFragment(functionFragment).commit();
+                        if (floatingActionButton.getVisibility() == View.INVISIBLE) {
+                            floatingActionButton.show();
+                        }
                         return true;
                     case R.id.navigation_notifications:
                         switchFragment(meFragment).commit();
+                        if (floatingActionButton.getVisibility() == View.VISIBLE) {
+                            floatingActionButton.hide();
+                        }
                         return true;
                 }
                 return false;
@@ -214,6 +244,10 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
                 return false;
             }
         });
+    }
+
+    public ReserveFragment getReserveFragment() {
+        return reserveFragment;
     }
 
     /**

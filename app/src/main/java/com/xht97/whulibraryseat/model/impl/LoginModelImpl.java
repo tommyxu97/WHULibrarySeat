@@ -31,7 +31,7 @@ public class LoginModelImpl implements ILoginModel {
                 String token = JsonUtil.getToken(data);
                 if(!token.equals("ERROR")) {
                     if (LoginModelImpl.this.data.edit().putString("token", token).commit()) {
-                        callback.onSuccess("登陆成功");
+                        callback.onSuccess("登录成功");
                     }
                 } else {
                     callback.onError(JsonUtil.getErrorMessage(data));

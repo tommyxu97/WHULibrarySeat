@@ -1,6 +1,5 @@
 package com.xht97.whulibraryseat.ui.activity;
 
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -108,12 +107,12 @@ public class LoginActivity extends BaseActivity<LoginActivity, LoginPresenter> i
             // 0表示学号输入框
             case 0:
                 studentId.requestFocus();
-                studentId.setError(Html.fromHtml("<font color='white'>"+message+"</font>", 1));
+                studentId.setError(message);
                 break;
             // 1表示密码
             case 1:
                 password.requestFocus();
-                password.setError(Html.fromHtml("<font color='white'>"+message+"</font>", 1));
+                password.setError(message);
                 break;
         }
     }

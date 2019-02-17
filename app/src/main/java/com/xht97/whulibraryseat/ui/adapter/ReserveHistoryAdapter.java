@@ -11,7 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xht97.whulibraryseat.R;
+import com.xht97.whulibraryseat.base.BasePresenter;
 import com.xht97.whulibraryseat.model.bean.ReserveHistory;
+import com.xht97.whulibraryseat.model.impl.ReserveModelImpl;
+import com.xht97.whulibraryseat.model.impl.SeatActionModelImpl;
+import com.xht97.whulibraryseat.ui.fragment.ReserveHistoryFragment;
 
 import java.util.List;
 
@@ -20,7 +24,9 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
     private Context mContext;
     private List<ReserveHistory> reserveHistories;
 
-    private View.OnClickListener clickListener;
+    private ReserveModelImpl reserveModel = new ReserveModelImpl();
+    private SeatActionModelImpl seatActionModel = new SeatActionModelImpl();
+    private ReserveHistoryFragment fragment;
 
     public ReserveHistoryAdapter(Context context, List<ReserveHistory> data) {
         mContext = context;
@@ -32,8 +38,8 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
         notifyDataSetChanged();
     }
 
-    public void setOnButtonClickListener (View.OnClickListener clickListener) {
-        this.clickListener = clickListener;
+    public void bindFragment(ReserveHistoryFragment fragment) {
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -71,16 +77,60 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
         } else if (history.getStat().equals("COMPLETE")) {
             viewHolder.button.setEnabled(false);
             viewHolder.button.setText("已完成");
-        } else {
+        } else if (history.getStat().equals("RESERVE")){
             viewHolder.button.setEnabled(true);
             viewHolder.button.setText("取消预约");
             viewHolder.button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    v.setTag(history);
-                    clickListener.onClick(v);
+                    reserveModel.cancelSeat(history.getId(), new BasePresenter.BaseRequestCallback<String>() {
+                        @Override
+                        public void onSuccess(String data) {
+                            super.onSuccess(data);
+                            fragment.showMessage("取消预约成功");
+                            fragment.initData();
+
+                            fragment.getMainActivity().getReserveFragment().updateCurrentReserve();
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            super.onError(message);
+                            fragment.showMessage(message);
+                        }
+                    });
                 }
             });
+        } else if (history.getStat().equals("CHECKIN")) {
+            viewHolder.button.setEnabled(true);
+            viewHolder.button.setText("停止使用");
+            viewHolder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    seatActionModel.stop(new BasePresenter.BaseRequestCallback<String>() {
+                        @Override
+                        public void onSuccess(String data) {
+                            super.onSuccess(data);
+                            fragment.showMessage("停止使用座位成功");
+                            fragment.initData();
+
+                            fragment.getMainActivity().getReserveFragment().updateCurrentReserve();
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            super.onError(message);
+                            fragment.showMessage(message);
+                        }
+                    });
+                }
+            });
+        } else if (history.getStat().equals("MISS")){
+            viewHolder.button.setEnabled(false);
+            viewHolder.button.setText("失约");
+        } else {
+            viewHolder.button.setEnabled(false);
+            viewHolder.button.setText("已完成");
         }
 
     }
