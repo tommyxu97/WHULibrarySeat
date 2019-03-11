@@ -40,6 +40,12 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.setCurrentReserve();
+    }
+
+    @Override
     protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_reserve, container, false);
 

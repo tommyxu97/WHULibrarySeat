@@ -81,7 +81,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     getView().getStatusDetail().setText(detail);
 
                     // 将主页上的FAB改为停止使用座位的点击模式
-                    if (reserve.getStatus().equals("CHECKIN")) {
+                    if (reserve.getStatus().equals("CHECK_IN")) {
                         setFabStopUsing();
                     }
                 } else {
