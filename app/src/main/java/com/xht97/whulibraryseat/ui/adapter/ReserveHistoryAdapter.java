@@ -101,7 +101,7 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
                     });
                 }
             });
-        } else if (history.getStat().equals("CHECKIN")) {
+        } else if (history.getStat().equals("CHECK_IN")) {
             viewHolder.button.setEnabled(true);
             viewHolder.button.setText("停止使用");
             viewHolder.button.setOnClickListener(new View.OnClickListener() {
