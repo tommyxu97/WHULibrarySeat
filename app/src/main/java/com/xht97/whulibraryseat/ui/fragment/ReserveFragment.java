@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -27,6 +28,7 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
     private LinearLayout bar;
     private Spinner dateSpinner;
     private Spinner buildingSpinner;
+    private ImageView timeSelectView;
 
     private SwipeRefreshLayout roomLayout;
     private SwipeRefreshLayout seatLayout;
@@ -53,6 +55,7 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
         bar = mRootView.findViewById(R.id.ll_reserve_bar);
         dateSpinner = mRootView.findViewById(R.id.sp_date);
         buildingSpinner = mRootView.findViewById(R.id.sp_building);
+        timeSelectView = mRootView.findViewById(R.id.iv_time_select);
         roomLayout = mRootView.findViewById(R.id.sfl_reserve_room);
         seatLayout = mRootView.findViewById(R.id.sfl_reserve_seat);
         roomView = mRootView.findViewById(R.id.rv_reserve_room);
@@ -146,6 +149,14 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
 
     public Spinner getBuildingSpinner() {
         return buildingSpinner;
+    }
+
+    public ImageView getTimeSelectView() {
+        return timeSelectView;
+    }
+
+    public void setTimeSelectView(ImageView timeSelectView) {
+        this.timeSelectView = timeSelectView;
     }
 
     public SwipeRefreshLayout getRoomLayout() {

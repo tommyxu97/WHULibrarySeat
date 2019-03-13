@@ -23,4 +23,8 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.xht97.whulibraryseat", appContext.getPackageName());
     }
+
+    public void usingSeatTest() {
+
+    }
 }

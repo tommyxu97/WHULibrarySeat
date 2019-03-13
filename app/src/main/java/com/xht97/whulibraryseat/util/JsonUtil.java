@@ -408,7 +408,8 @@ public class JsonUtil {
         try {
             JSONObject object = new JSONObject(data);
 
-            if (isRequestSuccessful(object)) {
+            // Bug Fixed：服务器返回的这条数据没有status，不能进行成功返回检测
+            if (true) {
                 List<Seat> seats =  new ArrayList<>();
                 if (object.getJSONObject("data").get("seats") == JSONObject.NULL) {
                     return seats;

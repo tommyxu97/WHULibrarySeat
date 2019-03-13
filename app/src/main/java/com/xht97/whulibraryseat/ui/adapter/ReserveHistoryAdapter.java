@@ -1,6 +1,8 @@
 package com.xht97.whulibraryseat.ui.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v7.widget.RecyclerView;
@@ -59,11 +61,14 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
         String time = history.getBegin() + "-" + history.getEnd();
         viewHolder.timeView.setText(time);
         if ((history.getAwayBegin() != null) && (history.getAwayEnd() == null)) {
-            viewHolder.actualView.setText("实际离开时间为：" + history.getAwayBegin());
+            viewHolder.actualView.setVisibility(View.VISIBLE);
+            viewHolder.actualView.setText("实际离开：" + history.getAwayBegin());
         } else if ((history.getAwayBegin() == null) && (history.getAwayEnd() != null)) {
-            viewHolder.actualView.setText("实际暂离返回时间为：" + history.getAwayEnd());
+            viewHolder.actualView.setVisibility(View.VISIBLE);
+            viewHolder.actualView.setText("暂离返回：" + history.getAwayEnd());
         } else if ((history.getAwayBegin() != null) && (history.getAwayEnd() != null)) {
-            viewHolder.actualView.setText("实际暂离开始和结束时间为：" + history.getAwayBegin() + "-" +
+            viewHolder.actualView.setVisibility(View.VISIBLE);
+            viewHolder.actualView.setText("暂离开始和结束：" + history.getAwayBegin() + "-" +
             history.getAwayEnd());
         } else {
             viewHolder.actualLayout.setVisibility(View.GONE);
@@ -83,22 +88,38 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
             viewHolder.button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reserveModel.cancelSeat(history.getId(), new BasePresenter.BaseRequestCallback<String>() {
-                        @Override
-                        public void onSuccess(String data) {
-                            super.onSuccess(data);
-                            fragment.showMessage("取消预约成功");
-                            fragment.initData();
+                    AlertDialog dialog = new AlertDialog.Builder(fragment.getActivity())
+                            .setTitle("提示")
+                            .setMessage("确认取消该座位的预约吗")
+                            .setNegativeButton("手滑了", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    reserveModel.cancelSeat(history.getId(), new BasePresenter.BaseRequestCallback<String>() {
+                                        @Override
+                                        public void onSuccess(String data) {
+                                            super.onSuccess(data);
+                                            fragment.showMessage("取消预约成功");
+                                            fragment.initData();
 
-                            fragment.getMainActivity().getReserveFragment().updateCurrentReserve();
-                        }
+                                            fragment.getMainActivity().getReserveFragment().updateCurrentReserve();
+                                        }
 
-                        @Override
-                        public void onError(String message) {
-                            super.onError(message);
-                            fragment.showMessage(message);
-                        }
-                    });
+                                        @Override
+                                        public void onError(String message) {
+                                            super.onError(message);
+                                            fragment.showMessage(message);
+                                        }
+                                    });
+                                }
+                            })
+                            .create();
+                    dialog.show();
                 }
             });
         } else if (history.getStat().equals("CHECK_IN")) {
@@ -107,22 +128,38 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
             viewHolder.button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    seatActionModel.stop(new BasePresenter.BaseRequestCallback<String>() {
-                        @Override
-                        public void onSuccess(String data) {
-                            super.onSuccess(data);
-                            fragment.showMessage("停止使用座位成功");
-                            fragment.initData();
+                    AlertDialog dialog = new AlertDialog.Builder(fragment.getActivity())
+                            .setTitle("提示")
+                            .setMessage("确认释放当前所使用的座位吗？")
+                            .setNegativeButton("手滑了", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    seatActionModel.stop(new BasePresenter.BaseRequestCallback<String>() {
+                                        @Override
+                                        public void onSuccess(String data) {
+                                            super.onSuccess(data);
+                                            fragment.showMessage("停止使用座位成功");
+                                            fragment.initData();
 
-                            fragment.getMainActivity().getReserveFragment().updateCurrentReserve();
-                        }
+                                            fragment.getMainActivity().getReserveFragment().updateCurrentReserve();
+                                        }
 
-                        @Override
-                        public void onError(String message) {
-                            super.onError(message);
-                            fragment.showMessage(message);
-                        }
-                    });
+                                        @Override
+                                        public void onError(String message) {
+                                            super.onError(message);
+                                            fragment.showMessage(message);
+                                        }
+                                    });
+                                }
+                            })
+                            .create();
+                    dialog.show();
                 }
             });
         } else if (history.getStat().equals("MISS")){

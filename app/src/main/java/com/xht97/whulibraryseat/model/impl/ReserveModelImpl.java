@@ -241,7 +241,8 @@ public class ReserveModelImpl implements IReserveModel {
         map.put("page", "1");
         map.put("t2", "2");
 
-        httpUtil.postWithToken(WHUSeatApi.SELECT_SEAT, AppDataUtil.getTokenFromLocal(), map, new HttpUtil.HttpCallBack() {
+        httpUtil.postWithToken(WHUSeatApi.SELECT_SEAT + date + "/" + startTime + "/"
+                + endTime, AppDataUtil.getTokenFromLocal(), map, new HttpUtil.HttpCallBack() {
             @Override
             public void onSuccess(String data) {
                 List<Seat> seats = JsonUtil.getSeatsByTime(data);

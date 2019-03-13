@@ -11,6 +11,8 @@ public interface MainContract {
         void setFabFunction(int type);
 
         void setUiMode(int mode);
+
+        int getUiMode();
     }
 
     abstract class AbstractMainPresenter extends BasePresenter<MainActivity> {

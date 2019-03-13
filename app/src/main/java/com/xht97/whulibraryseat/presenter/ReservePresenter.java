@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.tapadoo.alerter.Alerter;
 import com.xht97.whulibraryseat.contract.ReserveContract;
@@ -30,9 +32,11 @@ import com.xht97.whulibraryseat.ui.adapter.SeatAdapter;
 import com.xht97.whulibraryseat.ui.adapter.SeatTimeAdapter;
 import com.xht97.whulibraryseat.ui.listener.ClickListener;
 import com.xht97.whulibraryseat.ui.weight.SeatChooserDialog;
+import com.xht97.whulibraryseat.ui.weight.TimeChooserDialog;
 import com.xht97.whulibraryseat.util.AppDataUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
@@ -57,6 +61,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
     private int seatId;
     private String startTime;
     private String endTime;
+
+    public ReservePresenter() {
+    }
 
     @Override
     public void setCurrentReserve() {
@@ -189,6 +196,8 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             public void onSuccess(List<Seat> data, int[] layout) {
                 super.onSuccess(data);
                 roomLayout = layout;
+                // 由于用户使用时间筛选座位功能时，会重新设置adapter，此处需要重置adapter
+                getView().getSeatView().setAdapter(seatAdapter);
                 seatAdapter.updateData(data);
                 getView().hideLoading();
                 getView().getSeatLayout().setRefreshing(false);
@@ -330,7 +339,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
     public void setAdapter() {
         // 这些操作均在Fragment初始化时完成
         final RecyclerView roomView = getView().getRoomView();
-        RecyclerView seatView = getView().getSeatView();
+        final RecyclerView seatView = getView().getSeatView();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getView().getActivity());
         layoutManager.setOrientation(OrientationHelper. VERTICAL);
@@ -468,6 +477,104 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         seatView.setLayoutManager(layoutManager2);
         seatView.setAdapter(seatAdapter);
         seatView.setItemAnimator(new DefaultItemAnimator());
+
+        // 设置时间筛选功能
+        ImageView timeSelectView = getView().getTimeSelectView();
+        timeSelectView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (activity.getUiMode() == MainActivity.SEAT_MODE) {
+                    final TimeChooserDialog dialog = new TimeChooserDialog(activity);
+
+                    final Spinner startTimeSpinner = dialog.getStartTime();
+                    Spinner endTimeSpinner = dialog.getEndTime();
+                    Button button = dialog.getButton();
+
+                    final SeatTimeAdapter seatTimeAdapter1 = new SeatTimeAdapter(activity, AppDataUtil.getFullSeatTime());
+                    final SeatTimeAdapter seatTimeAdapter2 = new SeatTimeAdapter(activity, AppDataUtil.getFullSeatTime());
+                    startTimeSpinner.setAdapter(seatTimeAdapter1);
+                    startTimeSpinner.setSelection(0);
+                    endTimeSpinner.setAdapter(seatTimeAdapter2);
+                    endTimeSpinner.setSelection(0);
+
+                    startTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            startTime = seatTimeAdapter1.getSeatTimeByPosition(position).getId();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                    endTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            endTime = seatTimeAdapter2.getSeatTimeByPosition(position).getId();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Integer.parseInt(startTime) > Integer.parseInt(endTime)) {
+                                Toast.makeText(activity, "请选择合适的开始与结束时间", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Toast.makeText(activity, "正在按照时间要求筛选座位", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            getView().showLoading();
+                            reserveModel.selectSeatByTime(buildingId, roomId, date, startTime, endTime, new BaseRequestCallback<List<Seat>>() {
+                                @Override
+                                public void onSuccess(final List<Seat> data) {
+                                    super.onSuccess(data);
+                                    getView().hideLoading();
+                                    getView().getSeatLayout().setVisibility(View.VISIBLE);
+                                    SeatAdapter adapter = new SeatAdapter(activity, data);
+                                    adapter.setOnItemClickListener(new ClickListener() {
+                                        @Override
+                                        public void onItemClick(int position, View v) {
+                                            Seat seat = data.get(position);
+                                            seatId = seat.getId();
+
+                                            Log.d(TAG, "用户选中了座位：" + seat.getId() + "，座位号为：" + seat.getName() + "\n"
+                                                    + "时间段已选择，正在执行预约");
+
+                                            getView().showLoading();
+                                            reserve();
+                                        }
+
+                                        @Override
+                                        public void onItemLongClick(int position, View v) {
+                                            getView().showMessage("Seat Name:" + seatAdapter.getSeatByPosition(position).getName()
+                                                    + ",Seat Id:" + seatId);
+                                        }
+                                    });
+                                    getView().getSeatView().setAdapter(adapter);
+                                }
+
+                                @Override
+                                public void onError(String message) {
+                                    super.onError(message);
+                                    getView().showMessage(message);
+                                    getView().hideLoading();
+                                }
+                            });
+                        }
+                    });
+
+                    dialog.show();
+                } else {
+                    Toast.makeText(activity, "请进入场馆的某楼层后再使用按时间选座功能", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void setFabStopUsing() {

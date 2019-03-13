@@ -51,6 +51,12 @@
                 android:layout_height="wrap_content">
             </Spinner>
 
+            <ImageView
+                android:id="@+id/iv_time_select"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_action_time" />
+
         </LinearLayout>
 
         <View

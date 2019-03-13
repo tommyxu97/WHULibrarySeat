@@ -1,6 +1,7 @@
 package com.xht97.whulibraryseat.ui.activity;
 
-import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +41,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     public static final int ROOM_MODE = 4;
     public static final int SEAT_MODE = 5;
 
+    MainActivity activity = this;
     Fragment currentFragment;
     ReserveFragment reserveFragment;
     FunctionFragment functionFragment;
@@ -129,6 +131,11 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     @Override
     public void setUiMode(int mode) {
         uiMode = mode;
+    }
+
+    @Override
+    public int getUiMode() {
+        return uiMode;
     }
 
     @Override
@@ -283,7 +290,23 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     private class FabStopUsingSeatListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            reserveFragment.stopSeat();
+            AlertDialog dialog = new AlertDialog.Builder(activity)
+                    .setTitle("(ˉ▽￣～) ~")
+                    .setMessage("确认释放当前所使用的座位吗？")
+                    .setNegativeButton("手滑了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            reserveFragment.stopSeat();
+                        }
+                    })
+                    .create();
+            dialog.show();
         }
     }
 }
