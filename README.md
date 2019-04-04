@@ -2,6 +2,8 @@
 
 Material designed app for reserving seats in WHU library.
 
+[![HitCount](http://hits.dwyl.io/tommyxu97/WHULibrarySeat.svg)](http://hits.dwyl.io/tommyxu97/WHULibrarySeat)
+
 Published on `CoolApk` market.
 
 [Download at CoolApk](https://www.coolapk.com/apk/218282)
