@@ -88,12 +88,14 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     getView().getStatusDetail().setText(detail);
 
                     // 将主页上的FAB改为停止使用座位的点击模式
-                    if (reserve.getStatus().equals("CHECK_IN")) {
+                    if (reserve.getStatus().equals("CHECK_IN") || reserve.getStatus().equals("AWAY")) {
                         setFabStopUsing();
                     }
                 } else {
-                    getView().getStatusTitle().setText("您目前没有正在使用的预约");
-                    getView().getStatusDetail().setText("小提示：正在使用的座位会在这里显示哦");
+                    if (getView() != null) {
+                        getView().getStatusTitle().setText("您目前没有正在使用的预约");
+                        getView().getStatusDetail().setText("小提示：正在使用的座位会在这里显示哦");
+                    }
                 }
             }
 

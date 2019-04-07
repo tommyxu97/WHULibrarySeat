@@ -8,7 +8,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="敬请期待"
-        android:layout_gravity="center"/>
+        android:text="敬请期待\n也欢迎反馈您的想法\nMail: i@xht97.cn"
+        android:layout_gravity="center"
+        android:gravity="center"/>
 
 </FrameLayout>

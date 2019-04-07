@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,15 +62,18 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
         String time = history.getBegin() + "-" + history.getEnd();
         viewHolder.timeView.setText(time);
         if ((history.getAwayBegin() != null) && (history.getAwayEnd() == null)) {
-            viewHolder.actualView.setVisibility(View.VISIBLE);
             viewHolder.actualView.setText("实际离开：" + history.getAwayBegin());
+            viewHolder.actualLayout.setVisibility(View.VISIBLE);
+            viewHolder.itemView.invalidate();
         } else if ((history.getAwayBegin() == null) && (history.getAwayEnd() != null)) {
-            viewHolder.actualView.setVisibility(View.VISIBLE);
             viewHolder.actualView.setText("暂离返回：" + history.getAwayEnd());
+            viewHolder.actualLayout.setVisibility(View.VISIBLE);
+            viewHolder.itemView.invalidate();
         } else if ((history.getAwayBegin() != null) && (history.getAwayEnd() != null)) {
-            viewHolder.actualView.setVisibility(View.VISIBLE);
             viewHolder.actualView.setText("暂离开始和结束：" + history.getAwayBegin() + "-" +
-            history.getAwayEnd());
+                    history.getAwayEnd());
+            viewHolder.actualLayout.setVisibility(View.VISIBLE);
+            viewHolder.itemView.invalidate();
         } else {
             viewHolder.actualLayout.setVisibility(View.GONE);
         }
@@ -122,7 +126,7 @@ public class ReserveHistoryAdapter extends RecyclerView.Adapter<ReserveHistoryAd
                     dialog.show();
                 }
             });
-        } else if (history.getStat().equals("CHECK_IN")) {
+        } else if (history.getStat().equals("CHECK_IN") || history.getStat().equals("AWAY")) {
             viewHolder.button.setEnabled(true);
             viewHolder.button.setText("停止使用");
             viewHolder.button.setOnClickListener(new View.OnClickListener() {
