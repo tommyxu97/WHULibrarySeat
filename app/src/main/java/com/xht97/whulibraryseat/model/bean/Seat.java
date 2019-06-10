@@ -1,6 +1,8 @@
 package com.xht97.whulibraryseat.model.bean;
 
-public class Seat {
+import java.io.Serializable;
+
+public class Seat implements Serializable {
 
     private int id;
     private String name;

@@ -58,18 +58,32 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/bt_reserve_action"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/bt_shape"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:text="@string/reserve_seat_reserve_button"
-        android:textColor="@color/white"
-        android:layout_margin="8dp"
-        android:paddingStart="24dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="3dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/bt_reserve_action"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/bt_shape"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="@string/reserve_seat_reserve_button"
+            android:textColor="@color/white"
+            android:layout_margin="8dp"
+            android:paddingStart="24dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="3dp" />
+
+        <ImageView
+            android:id="@+id/iv_reserve_star"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_action_star_border" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -7,9 +7,16 @@ android {
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 5
-        versionName "V1.0.0"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs' //set .so files directory to libs  存放jni库
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -30,9 +37,9 @@ dependencies {
 
     // OkHttp-Web Request Module
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    // Gson
-    // implementation 'com.google.code.gson:gson:2.8.0'
-    // CircleImageView-Show Circle Image View
+    // FastJson
+    implementation 'com.alibaba:fastjson:1.1.54.android'
+    // CircleImageView-Show Circle Image Views
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     // Alert
     implementation 'com.tapadoo.android:alerter:2.0.6'

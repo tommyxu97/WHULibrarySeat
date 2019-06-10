@@ -3,12 +3,14 @@ package com.xht97.whulibraryseat.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xht97.whulibraryseat.app.MyApplication;
+import com.xht97.whulibraryseat.model.bean.Seat;
 import com.xht97.whulibraryseat.model.bean.SeatTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class AppDataUtil {
@@ -88,6 +90,27 @@ public class AppDataUtil {
             }
         }
         return seatTimes;
+    }
+
+    public static boolean isSeatStared(Seat seat) {
+        SharedPreferences sharedPreferences = getSharedPref("Data");
+        String jsonString = sharedPreferences.getString("staredSeats", "{}");
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        return jsonObject.containsKey(String.valueOf(seat.getId()));
+    }
+
+    public static void setSeatStared(Seat seat, boolean flag) {
+        SharedPreferences sharedPreferences = getSharedPref("Data");
+        String jsonString = sharedPreferences.getString("staredSeats", "{}");
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        if (flag) {
+            // 添加收藏一个座位
+            jsonObject.put(String.valueOf(seat.getId()), JSON.toJSON(seat));
+        } else {
+            // 取消收藏一个座位
+            jsonObject.remove(String.valueOf(seat.getId()));
+        }
+        sharedPreferences.edit().putString("staredSeats", jsonObject.toJSONString()).apply();
     }
 
 }

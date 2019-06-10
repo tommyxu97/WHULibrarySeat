@@ -3,8 +3,6 @@ package com.xht97.whulibraryseat.ui.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -42,6 +41,8 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     public static final int SEAT_MODE = 5;
 
     MainActivity activity = this;
+    FrameLayout emptyView;
+
     Fragment currentFragment;
     ReserveFragment reserveFragment;
     FunctionFragment functionFragment;
@@ -63,8 +64,11 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         navigation = findViewById(R.id.navigation);
         floatingActionButton = findViewById(R.id.fab_main);
         progressBar = findViewById(R.id.pb_main);
+        emptyView = findViewById(R.id.fl_main_empty);
 
         floatingActionButton.setOnClickListener(new FabToLoginListener());
+        // 初始设置空白页不可见
+        emptyView.setVisibility(View.INVISIBLE);
 
         // 如果用户没有登录，则直接跳转登录页(例如用户第一次打开软件，直接不初始化碎片并显示空页面)
         if (!(AppDataUtil.isAutoLogin() && AppDataUtil.isPasswordExists())) {
@@ -111,7 +115,15 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
 
     @Override
     public void showEmptyView() {
-
+        // 展示空白页，并且当用户点击页面时会重新刷新
+        emptyView.setVisibility(View.VISIBLE);
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initView();
+                initData();
+            }
+        });
     }
 
     @Override
@@ -164,7 +176,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case StaticVar.RESULT_LOGIN:
                 if (resultCode == RESULT_OK) {
@@ -209,7 +221,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
 
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         switchFragment(reserveFragment).commit();
@@ -236,7 +248,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
 
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         switchFragment(reserveFragment).commit();

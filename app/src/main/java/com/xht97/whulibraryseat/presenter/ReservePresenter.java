@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.tapadoo.alerter.Alerter;
+import com.xht97.whulibraryseat.R;
 import com.xht97.whulibraryseat.contract.ReserveContract;
 import com.xht97.whulibraryseat.model.bean.Building;
 import com.xht97.whulibraryseat.model.bean.InstantReserve;
@@ -36,7 +37,6 @@ import com.xht97.whulibraryseat.ui.weight.TimeChooserDialog;
 import com.xht97.whulibraryseat.util.AppDataUtil;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
@@ -62,9 +62,15 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
     private String startTime;
     private String endTime;
 
+    /**
+     * ReservePresenter
+     */
     public ReservePresenter() {
     }
 
+    /**
+     * 在用户界面上显示目前的预约状态
+     */
     @Override
     public void setCurrentReserve() {
         userModel.getReserve(new BaseRequestCallback<List<Reserve>>() {
@@ -107,6 +113,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 初始化可以用户可以预约座位的日期与场馆
+     */
     @Override
     public void setAvailableTime() {
         activity = (MainActivity) getView().getActivity();
@@ -169,6 +178,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 获取一个场馆的所有楼层与大厅
+     */
     @Override
     public void getRooms() {
         reserveModel.getBuildingStatus(buildingId, new BaseRequestCallback<List<Room>>() {
@@ -191,6 +203,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
     }
 
+    /**
+     * 获取一个楼层或大厅的所有座位状态
+     */
     @Override
     public void getSeats() {
         reserveModel.getRoomStatus(roomId, date, new BaseRequestCallback<List<Seat>>() {
@@ -215,6 +230,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 获取一个座位可以使用的开始时间
+     */
     @Override
     public void getSeatStartTime() {
         reserveModel.getSeatStartTime(seatId, date, new BaseRequestCallback<List<SeatTime>>() {
@@ -231,6 +249,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 获取一个座位可以使用的结束时间
+     */
     @Override
     public void getSeatEndTime() {
         reserveModel.getSeatEndTime(seatId, startTime, date, new BaseRequestCallback<List<SeatTime>>() {
@@ -247,6 +268,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 对选择好的座位与时间向服务器发起预约
+     */
     @Override
     public void reserve() {
         // 如果开始时间选择的是现在，则参数为-1
@@ -298,6 +322,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 根据用户所给的时间段筛选某个楼层或大厅可以使用的座位
+     */
     @Override
     public void getSeatsByTime() {
         reserveModel.selectSeatByTime(buildingId, roomId, date, startTime, endTime, new BaseRequestCallback<List<Seat>>() {
@@ -315,6 +342,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 停止使用当前的座位
+     */
     @Override
     public void stopSeat() {
         if (currentReserveId != 0) {
@@ -337,6 +367,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         }
     }
 
+    /**
+     * Fragment初始化以及刷新页面，重新设置RecyclerView的Adapter
+     */
     @Override
     public void setAdapter() {
         // 这些操作均在Fragment初始化时完成
@@ -383,6 +416,14 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 final Spinner startTimeSpinner = dialog.getStartTime();
                 final Spinner endTimeSpinner = dialog.getEndTime();
                 Button reserveButton = dialog.getButton();
+                ImageView seatStar = dialog.getStar();
+
+                final boolean isSeatStared = AppDataUtil.isSeatStared(seat);
+                if (isSeatStared) {
+                    // 如果座位被用户收藏，则显示为实心的小星星
+                    dialog.getStar().setImageResource(R.drawable.ic_action_star);
+                }
+
 
                 final SeatTimeAdapter seatTimeAdapter1 = new SeatTimeAdapter(activity, new ArrayList<SeatTime>());
                 startTimeSpinner.setAdapter(seatTimeAdapter1);
@@ -462,6 +503,19 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                             reserve();
                             dialog.dismiss();
                             getView().showLoading();
+                        }
+                    }
+                });
+
+                seatStar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (isSeatStared) {
+                            dialog.getStar().setImageResource(R.drawable.ic_action_star_border);
+                            AppDataUtil.setSeatStared(seat, false);
+                        } else {
+                            dialog.getStar().setImageResource(R.drawable.ic_action_star);
+                            AppDataUtil.setSeatStared(seat, true);
                         }
                     }
                 });
@@ -579,6 +633,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         });
     }
 
+    /**
+     * 设置页面右下角的fab的状态为停止使用座位
+     */
     private void setFabStopUsing() {
         // 设置主页面上的FAB为停止使用的状态
         if (activity != null) {
@@ -586,6 +643,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         }
     }
 
+    /**
+     * 设置页面右下角的fab的状态为刷新token
+     */
     private void setFabLogin() {
         // 设置主页面上的FAB为登录按钮的状态
         if (activity != null) {

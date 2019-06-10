@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WHULibrarySeat</string>
     <string name="title_home">主页</string>
@@ -31,5 +32,4 @@
     <string name="about_email">Email(Feedback):i@xht97.cn</string>
     <string name="about_github">Github id@TommyXu97</string>
     <string name="about_thanks">致谢：Open Source Code Library/武大官方微信公众号</string>
-
 </resources>

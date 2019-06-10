@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.xht97.whulibraryseat.R;
@@ -33,6 +34,8 @@ public class TimeChooserDialog extends Dialog {
 
         setContentView(view);
         setCanceledOnTouchOutside(true);
+
+
     }
 
     public Spinner getStartTime() {
