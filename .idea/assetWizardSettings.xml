@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_weekend_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_favorite_border_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -44,9 +44,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_menu_seat_star" />
-                                      <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="ffc400" />
+                                      <entry key="outputName" value="ic_functions_lovers_seat" />
+                                      <entry key="themeColor" value="3f3f3f" />
                                     </map>
                                   </option>
                                 </PersistentState>

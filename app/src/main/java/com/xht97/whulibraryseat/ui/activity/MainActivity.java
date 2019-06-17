@@ -181,6 +181,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
             case StaticVar.RESULT_LOGIN:
                 if (resultCode == RESULT_OK) {
                     isLogin = true;
+                    emptyView.setVisibility(View.INVISIBLE);
                     // 如果开启应用时直接跳转了登录页面，则需要在返回时判断并初始化三个碎片
                     if (reserveFragment == null) {
                         initFragment();

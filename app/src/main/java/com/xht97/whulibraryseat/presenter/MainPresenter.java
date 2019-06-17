@@ -1,5 +1,7 @@
 package com.xht97.whulibraryseat.presenter;
 
+import android.widget.Toast;
+
 import com.xht97.whulibraryseat.contract.MainContract;
 import com.xht97.whulibraryseat.model.impl.LoginModelImpl;
 import com.xht97.whulibraryseat.util.AppDataUtil;
@@ -33,9 +35,9 @@ public class MainPresenter extends MainContract.AbstractMainPresenter {
             public void onError(String message) {
                 super.onError(message);
                 if (message.equals("timeout")) {
-                    message = "图书馆选座服务器的电波无法到达，可能服务器酱需要休息一下，请稍后再来哦";
+                    message = "图书馆选座服务器的电波无法到达，可能服务器酱需要休息一下~";
                 }
-                getView().showMessage(message);
+                Toast.makeText(getView(), message, Toast.LENGTH_LONG).show();
                 getView().hideLoading();
                 getView().showEmptyView();
             }

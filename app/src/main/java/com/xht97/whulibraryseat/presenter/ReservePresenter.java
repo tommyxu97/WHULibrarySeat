@@ -22,6 +22,7 @@ import com.xht97.whulibraryseat.model.bean.Reserve;
 import com.xht97.whulibraryseat.model.bean.Room;
 import com.xht97.whulibraryseat.model.bean.Seat;
 import com.xht97.whulibraryseat.model.bean.SeatTime;
+import com.xht97.whulibraryseat.model.bean.StaredSeat;
 import com.xht97.whulibraryseat.model.impl.ReserveModelImpl;
 import com.xht97.whulibraryseat.model.impl.SeatActionModelImpl;
 import com.xht97.whulibraryseat.model.impl.UserInfoModelImpl;
@@ -61,6 +62,10 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
     private int seatId;
     private String startTime;
     private String endTime;
+
+    // 收藏座位时需要使用楼栋名字，房间名字
+    private String buildingName = AppDataUtil.getLastSelectedBuildingName();
+    private String roomName;
 
     /**
      * ReservePresenter
@@ -155,7 +160,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             Building buildingObject = buildings.get(position);
                             buildingId = buildingObject.getId();
+                            buildingName = buildingObject.getName();
                             AppDataUtil.putLastSelectedBuilding(buildingId);
+                            AppDataUtil.putLastSelectedBuildingName(buildingName);
                             // 更新场馆时刷新页面
                             getView().showLoading();
                             getRooms();
@@ -377,13 +384,14 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         final RecyclerView seatView = getView().getSeatView();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getView().getActivity());
-        layoutManager.setOrientation(OrientationHelper. VERTICAL);
+        layoutManager.setOrientation(OrientationHelper.VERTICAL);
         roomAdapter = new RoomAdapter(getView().getActivity(), new ArrayList<Room>());
         roomAdapter.setOnItemClickListener(new ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Room room = roomAdapter.getRoomByPosition(position);
                 roomId = room.getRoomId();
+                roomName = room.getRoom();
 
                 Log.d(TAG, "选中" + room.getRoom());
                 // 当某个room被选中时，记录下roomId并且进入加载状态，请求座位信息，并在请求完成seats后hideLoading
@@ -418,7 +426,11 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 Button reserveButton = dialog.getButton();
                 ImageView seatStar = dialog.getStar();
 
-                final boolean isSeatStared = AppDataUtil.isSeatStared(seat);
+                final StaredSeat staredSeat = seat.toStaredSeat();
+                staredSeat.setBuildingId(buildingId);
+                staredSeat.setRoomId(roomId);
+                staredSeat.setDetailLocation(buildingName + "\n" + roomName);
+                final boolean isSeatStared = AppDataUtil.isSeatStared(staredSeat);
                 if (isSeatStared) {
                     // 如果座位被用户收藏，则显示为实心的小星星
                     dialog.getStar().setImageResource(R.drawable.ic_action_star);
@@ -512,10 +524,10 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     public void onClick(View v) {
                         if (isSeatStared) {
                             dialog.getStar().setImageResource(R.drawable.ic_action_star_border);
-                            AppDataUtil.setSeatStared(seat, false);
+                            AppDataUtil.setSeatStared(staredSeat, false);
                         } else {
                             dialog.getStar().setImageResource(R.drawable.ic_action_star);
-                            AppDataUtil.setSeatStared(seat, true);
+                            AppDataUtil.setSeatStared(staredSeat, true);
                         }
                     }
                 });

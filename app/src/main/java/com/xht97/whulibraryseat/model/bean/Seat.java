@@ -86,4 +86,18 @@ public class Seat implements Serializable {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public StaredSeat toStaredSeat() {
+        StaredSeat staredSeat = new StaredSeat();
+        staredSeat.setId(id);
+        staredSeat.setName(name);
+        staredSeat.setType(type);
+        staredSeat.setStatus(status);
+        staredSeat.setWindow(window);
+        staredSeat.setPower(power);
+        staredSeat.setComputer(computer);
+        staredSeat.setLocal(local);
+        staredSeat.setLocation(location);
+        return staredSeat;
+    }
 }

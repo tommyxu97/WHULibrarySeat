@@ -6,11 +6,12 @@ import android.content.SharedPreferences;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xht97.whulibraryseat.app.MyApplication;
-import com.xht97.whulibraryseat.model.bean.Seat;
 import com.xht97.whulibraryseat.model.bean.SeatTime;
+import com.xht97.whulibraryseat.model.bean.StaredSeat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 public class AppDataUtil {
@@ -71,6 +72,16 @@ public class AppDataUtil {
         return sharedPreferences.getInt("buildingId", 4);
     }
 
+    public static boolean putLastSelectedBuildingName(String name) {
+        SharedPreferences sharedPreferences = getSharedPref("Data");
+        return sharedPreferences.edit().putString("buildingName", name).commit();
+    }
+
+    public static String getLastSelectedBuildingName() {
+        SharedPreferences sharedPreferences = getSharedPref("Data");
+        return sharedPreferences.getString("buildingName", "总馆");
+    }
+
     public static List<SeatTime> getFullSeatTime() {
         List<SeatTime> seatTimes = new ArrayList<>();
         String[] timeValue = {"07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30"
@@ -83,23 +94,31 @@ public class AppDataUtil {
         int minute = calendar.get(Calendar.MINUTE);
         int current = hour*60 + minute - 30;
 
-        for (int i = 0; i<timeValue.length; i++) {
-            // 只有时段在当前时间之后才可以选择
-            if (id + 30*i >= current) {
-                seatTimes.add(new SeatTime(String.valueOf(id + 30*i), timeValue[i]));
+        if ((hour == 22 && minute >= 45) || hour > 22) {
+            // 22:45后可以选择第二天的所有时段
+            for (int i = 0; i<timeValue.length; i++) {
+                seatTimes.add(new SeatTime(String.valueOf(id + 30 * i), timeValue[i]));
+            }
+        } else {
+            // 其他情况下只可以选择当前时间之后的时段
+            for (int i = 0; i<timeValue.length; i++) {
+                // 只有时段在当前时间之后才可以选择
+                if (id + 30 * i >= current) {
+                    seatTimes.add(new SeatTime(String.valueOf(id + 30 * i), timeValue[i]));
+                }
             }
         }
         return seatTimes;
     }
 
-    public static boolean isSeatStared(Seat seat) {
+    public static boolean isSeatStared(StaredSeat seat) {
         SharedPreferences sharedPreferences = getSharedPref("Data");
         String jsonString = sharedPreferences.getString("staredSeats", "{}");
         JSONObject jsonObject = JSON.parseObject(jsonString);
         return jsonObject.containsKey(String.valueOf(seat.getId()));
     }
 
-    public static void setSeatStared(Seat seat, boolean flag) {
+    public static void setSeatStared(StaredSeat seat, boolean flag) {
         SharedPreferences sharedPreferences = getSharedPref("Data");
         String jsonString = sharedPreferences.getString("staredSeats", "{}");
         JSONObject jsonObject = JSON.parseObject(jsonString);
@@ -111,6 +130,20 @@ public class AppDataUtil {
             jsonObject.remove(String.valueOf(seat.getId()));
         }
         sharedPreferences.edit().putString("staredSeats", jsonObject.toJSONString()).apply();
+    }
+
+    public static List<StaredSeat> getStaredSeats() {
+        SharedPreferences sharedPreferences = getSharedPref("Data");
+        JSONObject jsonObject = JSON.parseObject(sharedPreferences.getString("staredSeats", "{}"));
+        Iterator<String> iterator = jsonObject.keySet().iterator();
+        List<StaredSeat> staredSeats = new ArrayList<>();
+        while (iterator.hasNext()) {
+            JSONObject seatObject = JSON.parseObject(jsonObject.getString(iterator.next()));
+            StaredSeat staredSeat = JSON.toJavaObject(seatObject, StaredSeat.class);
+            staredSeat.setStatus("FREE");
+            staredSeats.add(staredSeat);
+        }
+        return staredSeats;
     }
 
 }
