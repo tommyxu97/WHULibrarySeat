@@ -14,11 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.functions.LoversSeatActivity"
-            android:label="@string/title_activity_lovers_seat"/>
-        <activity android:name=".ui.activity.functions.ExamModeActivity"
-            android:label="@string/title_activity_exam_mode"/>
-        <activity android:name=".ui.activity.functions.StaredSeatActivity"
+        <activity android:name=".ui.activity.SeatLayoutActivity"></activity>
+        <activity
+            android:name=".ui.activity.functions.LoversSeatActivity"
+            android:label="@string/title_activity_lovers_seat" />
+        <activity
+            android:name=".ui.activity.functions.ExamModeActivity"
+            android:label="@string/title_activity_exam_mode" />
+        <activity
+            android:name=".ui.activity.functions.StaredSeatActivity"
             android:label="@string/title_activity_stared_seats" />
         <activity
             android:name=".ui.activity.MainActivity"
@@ -26,6 +30,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
