@@ -201,7 +201,8 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Toast.makeText(this, "暂时未完成", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+            startActivity(intent);
         } else if (id == R.id.action_about) {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(intent);
