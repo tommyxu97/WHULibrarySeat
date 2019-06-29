@@ -287,12 +287,17 @@ public class JsonUtil {
                 }
 
                 // BugFixed: 根据座位的名字排序，在显示在界面上时更利于用户选择
-                Collections.sort(seats, new Comparator<Seat>() {
-                    @Override
-                    public int compare(Seat o1, Seat o2) {
-                        return Integer.parseInt(o1.getName()) - Integer.parseInt(o2.getName());
-                    }
-                });
+                // 处理Exception防止程序闪退
+                try {
+                    Collections.sort(seats, new Comparator<Seat>() {
+                        @Override
+                        public int compare(Seat o1, Seat o2) {
+                            return Integer.parseInt(o1.getName()) - Integer.parseInt(o2.getName());
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 return seats;
             } else {
