@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import com.xht97.whulibraryseat.ui.adapter.SeatAdapter;
 import com.xht97.whulibraryseat.ui.adapter.SeatTimeAdapter;
 import com.xht97.whulibraryseat.ui.listener.ClickListener;
 import com.xht97.whulibraryseat.ui.weight.SeatChooserDialog;
+import com.xht97.whulibraryseat.ui.weight.SeatLayoutView;
 import com.xht97.whulibraryseat.ui.weight.TimeChooserDialog;
 import com.xht97.whulibraryseat.util.AppDataUtil;
 
@@ -101,6 +103,9 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     // 将主页上的FAB改为停止使用座位的点击模式
                     if (reserve.getStatus().equals("CHECK_IN") || reserve.getStatus().equals("AWAY")) {
                         setFabStopUsing();
+                    } else {
+                        // FIX_BUG：当程序从后台恢复运行时，用户的预约已经完成，但是fab仍然显示为停止按钮
+                        setFabLogin();
                     }
                 } else {
                     if (getView() != null) {
@@ -227,6 +232,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 getView().getSeatLayout().setRefreshing(false);
                 getView().getSeatLayout().setVisibility(View.VISIBLE);
                 activity.setUiMode(MainActivity.SEAT_MODE);
+                getView().getHorizontalScrollView().fullScroll(View.FOCUS_RIGHT);
             }
 
             @Override
@@ -378,11 +384,15 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
      * Fragment初始化以及刷新页面，重新设置RecyclerView的Adapter
      */
     @Override
-    public void setAdapter() {
+    public void init() {
         // 这些操作均在Fragment初始化时完成
         final RecyclerView roomView = getView().getRoomView();
         final RecyclerView seatView = getView().getSeatView();
+        SeatLayoutView seatLayoutView = getView().getSeatLayoutView();
 
+        // 下面代码分为四个部分：Room Adapter, Seat Adapter, Time Selector, Seat Layout Action
+
+        // Room Adapter
         LinearLayoutManager layoutManager = new LinearLayoutManager(getView().getActivity());
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
         roomAdapter = new RoomAdapter(getView().getActivity(), new ArrayList<Room>());
@@ -408,6 +418,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         roomView.setAdapter(roomAdapter);
         roomView.setItemAnimator(new DefaultItemAnimator());
 
+        // Seat Adapter
         RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getView().getActivity(), 5);
         seatAdapter = new SeatAdapter(getView().getActivity(), new ArrayList<Seat>());
         seatAdapter.setOnItemClickListener(new ClickListener() {
@@ -546,8 +557,8 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         seatView.setAdapter(seatAdapter);
         seatView.setItemAnimator(new DefaultItemAnimator());
 
-        // 设置时间筛选功能
-        ImageView timeSelectView = getView().getTimeSelectView();
+        // Time Selector
+        LinearLayout timeSelectView = getView().getTimeSelectView();
         timeSelectView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -641,6 +652,15 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                 } else {
                     Toast.makeText(activity, "请进入场馆的某楼层后再使用按时间选座功能", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        // Seat Layout Action
+        LinearLayout seatLayoutAction = getView().getLayoutActionView();
+        seatLayoutAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

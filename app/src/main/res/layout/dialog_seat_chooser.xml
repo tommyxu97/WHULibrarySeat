@@ -3,7 +3,7 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:background="@drawable/dialog_shape"
+    android:background="@drawable/shape_dialog"
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
@@ -67,7 +67,7 @@
         <Button
             android:id="@+id/bt_reserve_action"
             style="?android:attr/borderlessButtonStyle"
-            android:background="@drawable/bt_shape"
+            android:background="@drawable/shape_button"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:text="@string/reserve_seat_reserve_button"

@@ -39,6 +39,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     public static final int COMMON_MODE = 3;
     public static final int ROOM_MODE = 4;
     public static final int SEAT_MODE = 5;
+    public static final int SEAT_LAYOUT_MODE = 6;
 
     MainActivity activity = this;
     FrameLayout emptyView;
@@ -89,8 +90,10 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         if (!isLogin) {
             return;
         }
-        mPresenter.updateToken();
-        // initFragment();
+        //mPresenter.updateToken();
+
+        // DEBUG时为了防止重复登录，不需要刷新token
+        initFragment();
     }
 
     @Override

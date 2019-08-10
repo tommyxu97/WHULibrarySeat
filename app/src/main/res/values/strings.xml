@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WHULibrarySeat</string>
+    <string name="app_name">WHU预约助手</string>
     <string name="title_home">主页</string>
     <string name="title_dashboard">功能</string>
     <string name="title_notifications">我</string>
@@ -20,6 +20,8 @@
     <string name="reserve_seat_reserve_end">结束时间：</string>
     <string name="reserve_seat_reserve_button">提交预约</string>
     <string name="reserve_time_selector_button">确定</string>
+    <string name="reserve_time_select_image_button">时间筛选器</string>
+    <string name="reserve_layout_image_button">按照布局显示</string>
 
     <string name="me_default_title">加载中，请稍等</string>
 

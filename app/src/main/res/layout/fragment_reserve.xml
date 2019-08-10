@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- 视图中央的进度条 -->
         <ProgressBar
             android:id="@+id/pb_reserve"
             style="?android:attr/progressBarStyle"
@@ -21,52 +22,103 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/ll_reserve_bar"
+        <!-- 顶部的工具栏 -->
+        <HorizontalScrollView
+            android:id="@+id/hsv_reserve_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingStart="15dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="3dp"
-            android:gravity="center_vertical">
+            android:scrollbars="none">
 
-            <Spinner
-                android:id="@+id/sp_date"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content">
-            </Spinner>
-
-            <ImageView
+            <LinearLayout
+                android:id="@+id/ll_reserve_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_menu_next" />
+                android:paddingStart="15dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="3dp"
+                android:gravity="center_vertical">
 
-            <Spinner
-                android:id="@+id/sp_building"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content">
-            </Spinner>
+                <Spinner
+                    android:id="@+id/sp_date"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content">
+                </Spinner>
 
-            <ImageView
-                android:id="@+id/iv_time_select"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_action_time" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_menu_next" />
 
-        </LinearLayout>
+                <Spinner
+                    android:id="@+id/sp_building"
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content">
+                </Spinner>
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_menu_next" />
+
+                <LinearLayout
+                    android:id="@+id/ll_time_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_time_select"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_action_time" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reserve_time_select_image_button"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_layout_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/iv_layout_switch"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_action_layout" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reserve_layout_image_button"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- 工具栏下面的一条灰线 -->
         <View
             android:id="@+id/view_reserve_line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="3dp"
             android:background="@color/lightGray"
-            app:layout_constraintTop_toBottomOf="@id/ll_reserve_bar" />
+            app:layout_constraintTop_toBottomOf="@id/hsv_reserve_bar" />
 
+        <!-- 场馆视图 -->
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/sfl_reserve_room"
             android:layout_width="match_parent"
@@ -88,7 +140,7 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-
+        <!-- 座位视图（ID排列） -->
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/sfl_reserve_seat"
             android:layout_width="match_parent"
@@ -110,6 +162,20 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
+        <!-- 座位布局视图 -->
+        <com.xht97.whulibraryseat.ui.weight.SeatLayoutView
+            android:id="@+id/slv_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingBottom="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/ll_reserve_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_reserve_line"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <!-- 底部显示目前预约的视图 -->
         <LinearLayout
             android:id="@+id/ll_reserve_status"
             android:layout_width="match_parent"

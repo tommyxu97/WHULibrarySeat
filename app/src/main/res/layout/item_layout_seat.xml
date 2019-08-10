@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/shape_layout_seat">
+
+    <TextView
+        android:id="@+id/tv_item_layout_seat_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="40"
+        android:textColor="@color/lightGray"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="3dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_item_layout_seat_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_layout_seat_title"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp">
+
+        <ImageView
+            android:id="@+id/iv_item_layout_eat_window"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="2dp"
+            android:src="@drawable/ic_menu_sun"/>
+
+        <ImageView
+            android:id="@+id/iv_item_layout_seat_charge"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_menu_charge"/>
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

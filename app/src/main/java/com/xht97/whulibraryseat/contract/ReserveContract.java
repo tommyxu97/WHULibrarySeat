@@ -36,7 +36,7 @@ public interface ReserveContract {
 
         public abstract void stopSeat();
 
-        public abstract void setAdapter();
+        public abstract void init();
     }
 
 }

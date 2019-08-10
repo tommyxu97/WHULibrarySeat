@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -19,21 +19,26 @@ import com.xht97.whulibraryseat.R;
 import com.xht97.whulibraryseat.base.BaseFragment;
 import com.xht97.whulibraryseat.contract.ReserveContract;
 import com.xht97.whulibraryseat.presenter.ReservePresenter;
+import com.xht97.whulibraryseat.ui.weight.SeatLayoutView;
 
 
 public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresenter> implements ReserveContract.IReserveView {
 
     private ProgressBar progressBar;
 
+    private HorizontalScrollView horizontalScrollView;
     private LinearLayout bar;
     private Spinner dateSpinner;
     private Spinner buildingSpinner;
-    private ImageView timeSelectView;
+
+    private LinearLayout timeSelectView;
+    private LinearLayout layoutActionView;
 
     private SwipeRefreshLayout roomLayout;
     private SwipeRefreshLayout seatLayout;
     private RecyclerView roomView;
     private RecyclerView seatView;
+    private SeatLayoutView seatLayoutView;
 
     private TextView statusTitle;
     private TextView statusDetail;
@@ -52,14 +57,17 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
         mRootView = inflater.inflate(R.layout.fragment_reserve, container, false);
 
         progressBar = mRootView.findViewById(R.id.pb_reserve);
+        horizontalScrollView = mRootView.findViewById(R.id.hsv_reserve_bar);
         bar = mRootView.findViewById(R.id.ll_reserve_bar);
         dateSpinner = mRootView.findViewById(R.id.sp_date);
         buildingSpinner = mRootView.findViewById(R.id.sp_building);
-        timeSelectView = mRootView.findViewById(R.id.iv_time_select);
+        timeSelectView = mRootView.findViewById(R.id.ll_time_select);
+        layoutActionView = mRootView.findViewById(R.id.ll_layout_action);
         roomLayout = mRootView.findViewById(R.id.sfl_reserve_room);
         seatLayout = mRootView.findViewById(R.id.sfl_reserve_seat);
         roomView = mRootView.findViewById(R.id.rv_reserve_room);
         seatView = mRootView.findViewById(R.id.rv_reserve_seat);
+        seatLayoutView = mRootView.findViewById(R.id.slv_main);
         statusTitle = mRootView.findViewById(R.id.tv_reserve_status_title);
         statusDetail = mRootView.findViewById(R.id.tv_reserve_status_detail);
 
@@ -84,7 +92,7 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
         // 初始化页面上的数据
         // 首先显示为正在加载数据，并在加载完成时调用hideLoading
         showLoading();
-        mPresenter.setAdapter();
+        mPresenter.init();
 
         mPresenter.setCurrentReserve();
         mPresenter.setAvailableTime();
@@ -102,6 +110,7 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
 
         roomLayout.setVisibility(View.INVISIBLE);
         seatLayout.setVisibility(View.INVISIBLE);
+        seatLayoutView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -128,6 +137,7 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
     public void setRoomMode() {
         roomLayout.setVisibility(View.VISIBLE);
         seatLayout.setVisibility(View.INVISIBLE);
+        seatLayoutView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -137,6 +147,10 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
 
     public ProgressBar getProgressBar() {
         return progressBar;
+    }
+
+    public HorizontalScrollView getHorizontalScrollView() {
+        return horizontalScrollView;
     }
 
     public LinearLayout getBar() {
@@ -151,12 +165,12 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
         return buildingSpinner;
     }
 
-    public ImageView getTimeSelectView() {
+    public LinearLayout getTimeSelectView() {
         return timeSelectView;
     }
 
-    public void setTimeSelectView(ImageView timeSelectView) {
-        this.timeSelectView = timeSelectView;
+    public LinearLayout getLayoutActionView() {
+        return layoutActionView;
     }
 
     public SwipeRefreshLayout getRoomLayout() {
@@ -173,6 +187,10 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
 
     public RecyclerView getSeatView() {
         return seatView;
+    }
+
+    public SeatLayoutView getSeatLayoutView() {
+        return seatLayoutView;
     }
 
     public TextView getStatusTitle() {

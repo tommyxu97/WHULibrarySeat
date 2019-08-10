@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.SeatLayoutActivity"></activity>
         <activity
             android:name=".ui.activity.functions.LoversSeatActivity"
             android:label="@string/title_activity_lovers_seat" />
@@ -41,7 +40,8 @@
             android:theme="@style/AppTheme.NoActionBar.FitSystemWindows"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".ui.activity.AboutActivity" />
-        <activity android:name=".ui.activity.SettingActivity" />
+        <activity android:name=".ui.activity.SettingActivity"
+            android:label="@string/menu_setting"/>
     </application>
 
 </manifest>
