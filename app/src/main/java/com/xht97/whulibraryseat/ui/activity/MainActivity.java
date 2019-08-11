@@ -90,10 +90,10 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         if (!isLogin) {
             return;
         }
-        //mPresenter.updateToken();
+        mPresenter.updateToken();
 
         // DEBUG时为了防止重复登录，不需要刷新token
-        initFragment();
+        //initFragment();
     }
 
     @Override
@@ -162,6 +162,12 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
                 if (uiMode == SEAT_MODE) {
                     reserveFragment.setRoomMode();
                     uiMode = ROOM_MODE;
+                    return true;
+                }
+                // 用户进入布局选座后，按下返回键返回顺序布局
+                if (uiMode == SEAT_LAYOUT_MODE) {
+                    reserveFragment.setSeatMode();
+                    uiMode = SEAT_MODE;
                     return true;
                 }
 

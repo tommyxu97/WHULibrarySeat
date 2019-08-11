@@ -316,7 +316,7 @@ public class JsonUtil {
 
             if (isRequestSuccessful(object)) {
                 JSONObject dataObject = object.getJSONObject("data");
-                int[] layout = {dataObject.getInt("cols"), dataObject.getInt("rows")};
+                int[] layout = {dataObject.getInt("rows"), dataObject.getInt("cols")};
                 return layout;
             } else {
                 return null;

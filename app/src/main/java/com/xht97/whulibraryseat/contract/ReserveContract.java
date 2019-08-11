@@ -12,6 +12,10 @@ public interface ReserveContract {
 
         void setRoomMode();
 
+        void setSeatMode();
+
+        void setSeatLayoutMode();
+
         void updateCurrentReserve();
 
     }

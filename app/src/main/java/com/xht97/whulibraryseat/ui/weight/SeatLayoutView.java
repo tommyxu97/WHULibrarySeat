@@ -3,6 +3,7 @@ package com.xht97.whulibraryseat.ui.weight;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.xht97.whulibraryseat.model.bean.Seat;
@@ -11,6 +12,8 @@ import com.xht97.whulibraryseat.ui.listener.ClickListener;
 import java.util.List;
 
 public class SeatLayoutView extends View {
+
+    private final String TAG = "SeatLayoutView";
 
     /**
      * 存储当前场馆的位置信息
@@ -33,11 +36,20 @@ public class SeatLayoutView extends View {
 
     }
 
+
+
     /**
      * 设置View的数据
      */
     public void setData(List<Seat> seatList, int[] layoutInfo) {
+        mSeatList = seatList;
+        if (layoutInfo.length != 2) {
+            Log.d(TAG, "SeatLayoutView layout does not contain the correct data!");
+        }
+        rows = layoutInfo[0];
+        colomns = layoutInfo[1];
 
+        invalidate();
     }
 
     /**

@@ -55,7 +55,8 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
     private SeatAdapter seatAdapter;
 
     private int currentReserveId;
-    private int[] roomLayout;
+    private List<Seat> seatList = new ArrayList<>();
+    private int[] roomLayout = new int[] {0, 0};
 
     // 记录用户所选的选项
     private String date;
@@ -224,6 +225,8 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             @Override
             public void onSuccess(List<Seat> data, int[] layout) {
                 super.onSuccess(data);
+                // 当用户进入一个房间时记录下当前房间的布局和座位
+                seatList = data;
                 roomLayout = layout;
                 // 由于用户使用时间筛选座位功能时，会重新设置adapter，此处需要重置adapter
                 getView().getSeatView().setAdapter(seatAdapter);
@@ -388,7 +391,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
         // 这些操作均在Fragment初始化时完成
         final RecyclerView roomView = getView().getRoomView();
         final RecyclerView seatView = getView().getSeatView();
-        SeatLayoutView seatLayoutView = getView().getSeatLayoutView();
+        final SeatLayoutView seatLayoutView = getView().getSeatLayoutView();
 
         // 下面代码分为四个部分：Room Adapter, Seat Adapter, Time Selector, Seat Layout Action
 
@@ -649,18 +652,41 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     });
 
                     dialog.show();
-                } else {
-                    Toast.makeText(activity, "请进入场馆的某楼层后再使用按时间选座功能", Toast.LENGTH_LONG).show();
+                } else if (activity.getUiMode() == MainActivity.ROOM_MODE) {
+                    Toast.makeText(activity, "请先进入场馆的某楼层", Toast.LENGTH_LONG).show();
+                } else if (activity.getUiMode() == MainActivity.SEAT_LAYOUT_MODE) {
+                    Toast.makeText(activity, "目前布局选座无法时间筛选", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
         // Seat Layout Action
+        seatLayoutView.setClickListener(new ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+
+            }
+
+            @Override
+            public void onItemLongClick(int position, View v) {
+
+            }
+        });
         LinearLayout seatLayoutAction = getView().getLayoutActionView();
         seatLayoutAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (activity.getUiMode() == MainActivity.SEAT_MODE) {
+                    // 进入布局选座模式
+                    activity.setUiMode(MainActivity.SEAT_LAYOUT_MODE);
+                    getView().showLoading();
+                    getView().hideLoading();
+                    getView().getSeatLayoutView().setVisibility(View.VISIBLE);
 
+                    seatLayoutView.setData(seatList, roomLayout);
+                } else if (activity.getUiMode() == MainActivity.ROOM_MODE) {
+                    Toast.makeText(activity, "请进入场馆的某楼层后再使用座位布局功能", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

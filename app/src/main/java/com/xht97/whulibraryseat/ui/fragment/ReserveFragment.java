@@ -141,6 +141,20 @@ public class ReserveFragment extends BaseFragment<ReserveFragment, ReservePresen
     }
 
     @Override
+    public void setSeatMode() {
+        roomLayout.setVisibility(View.INVISIBLE);
+        seatLayout.setVisibility(View.VISIBLE);
+        seatLayoutView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void setSeatLayoutMode() {
+        roomLayout.setVisibility(View.INVISIBLE);
+        seatLayout.setVisibility(View.INVISIBLE);
+        seatLayoutView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void updateCurrentReserve() {
         mPresenter.setCurrentReserve();
     }
