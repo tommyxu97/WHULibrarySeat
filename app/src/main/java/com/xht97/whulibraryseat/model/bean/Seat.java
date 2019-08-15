@@ -1,5 +1,7 @@
 package com.xht97.whulibraryseat.model.bean;
 
+import android.content.Intent;
+
 import java.io.Serializable;
 
 public class Seat implements Serializable {
@@ -99,5 +101,21 @@ public class Seat implements Serializable {
         staredSeat.setLocal(local);
         staredSeat.setLocation(location);
         return staredSeat;
+    }
+
+    public int getSeatRow() {
+        if (location.length() < 4) {
+            return 1;
+        } else {
+            return Integer.parseInt(location.substring(0, location.length() - 3));
+        }
+    }
+
+    public int getSeatColumn() {
+        if (location.length() < 4) {
+            return Integer.parseInt(location);
+        } else {
+            return Integer.parseInt(location.substring(location.length() - 3));
+        }
     }
 }

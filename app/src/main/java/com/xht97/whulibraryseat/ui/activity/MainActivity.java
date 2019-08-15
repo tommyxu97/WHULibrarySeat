@@ -90,10 +90,10 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         if (!isLogin) {
             return;
         }
-        mPresenter.updateToken();
+        //mPresenter.updateToken();
 
         // DEBUG时为了防止重复登录，不需要刷新token
-        //initFragment();
+        initFragment();
     }
 
     @Override
