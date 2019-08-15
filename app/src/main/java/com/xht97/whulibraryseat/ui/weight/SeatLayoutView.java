@@ -159,9 +159,14 @@ public class SeatLayoutView extends View {
         }
         rows = layoutInfo[0];
         columns = layoutInfo[1];
-        seatLayout = new Seat[rows][columns];
-        for (Seat seat: seatList) {
-            seatLayout[seat.getSeatRow()][seat.getSeatColumn()] = seat;
+        // 座位行号和列号从1开始
+        seatLayout = new Seat[rows + 1][columns + 1];
+        try {
+            for (Seat seat: seatList) {
+                seatLayout[seat.getSeatRow()][seat.getSeatColumn()] = seat;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
         }
 
         matrix = new Matrix();
