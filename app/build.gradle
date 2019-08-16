@@ -6,8 +6,8 @@ android {
         applicationId "com.xht97.whulibraryseat"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.2"
+        versionCode 11
+        versionName "1.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

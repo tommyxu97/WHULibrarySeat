@@ -6,4 +6,58 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.SettingActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:text="@string/setting_clear_user_info"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tv_setting_user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/bt_setting_user_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingBottom="6dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="6dp"
+                android:text="@string/setting_clear_user_info_action"
+                android:textAppearance="?android:attr/textAppearanceButton"
+                android:textColor="@color/white"
+                app:cornerRadius="18dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

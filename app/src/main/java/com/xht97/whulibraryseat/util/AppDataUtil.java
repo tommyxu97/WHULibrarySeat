@@ -35,11 +35,16 @@ public class AppDataUtil {
         return sharedPreferences.getBoolean("autoLogin", false);
     }
 
+    public static boolean setAutoLogin(boolean autoLogin) {
+        SharedPreferences sharedPreferences = getSharedPref("Data");
+        return sharedPreferences.edit().putBoolean("autoLogin", autoLogin).commit();
+    }
+
     public static boolean isPasswordExists() {
         SharedPreferences sharedPreferences = getSharedPref("Account");
         String id = sharedPreferences.getString("id1", "");
         String password = sharedPreferences.getString("pwd1", "");
-        return (id.length() == 13) && (password.length() > 0);
+        return (id.length() > 0) && (password.length() > 0);
     }
 
     public static String getMainId() {

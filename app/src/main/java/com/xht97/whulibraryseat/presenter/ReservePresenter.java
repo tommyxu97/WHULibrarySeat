@@ -140,8 +140,6 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
                     final List<Building> buildings = lists.get(1);
 
                     // 设置可选的日期
-                    // 默认为今天
-                    date = dates.get(0);
                     DateAdapter dateAdapter = new DateAdapter(getView().getActivity(), dates);
                     getView().getDateSpinner().setAdapter(dateAdapter);
                     getView().getDateSpinner().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -155,6 +153,15 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
 
                         }
                     });
+                    // 默认为今天，但是可选明天时设置为第二天
+                    if (dates.size() == 1) {
+                        date = dates.get(0);
+                    } else if (dates.size() == 2){
+                        date = dates.get(1);
+                        getView().getDateSpinner().setSelection(1);
+                    } else {
+                        date = dates.get(0);
+                    }
 
                     // 设置可选的场馆
                     // 默认为上次选取的场馆

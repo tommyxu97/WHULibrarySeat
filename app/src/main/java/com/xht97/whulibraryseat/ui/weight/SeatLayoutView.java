@@ -306,8 +306,8 @@ public class SeatLayoutView extends View {
         int seatViewWidth = (int) ((columns * seatWidth + (columns + 1) * space) * getMatrixScaleX());
         int seatViewHeight = (int) ((rows * seatHeight + (rows + 1) * space) * getMatrixScaleY());
 
-        Log.d(TAG, "ViewActualWidth:" + seatViewWidth);
-        Log.d(TAG, "ViewActualHeight" + seatViewHeight);
+//        Log.d(TAG, "ViewActualWidth:" + seatViewWidth);
+//        Log.d(TAG, "ViewActualHeight" + seatViewHeight);
 
         if (seatViewWidth < viewWidth) {
             moveXLength = - getTranslateX();
@@ -438,19 +438,19 @@ public class SeatLayoutView extends View {
         float rawX = (x - getTranslateX()) / getMatrixScaleX();
         float rawY = (y - getTranslateY()) / getMatrixScaleY();
 
-        Log.d(TAG, "----------------------DEBUG INFO ---------------------");
-        Log.d(TAG, "Scale: "+ getMatrixScaleX());
-        Log.d(TAG, "TranslateX: " + getTranslateX());
-        Log.d(TAG, "TranslateY: " + getTranslateY());
-        Log.d(TAG, "Click x, y: " + x + ", " + y);
-        Log.d(TAG, "Click Raw x, y: " + rawX + ", " +rawY);
+//        Log.d(TAG, "----------------------DEBUG INFO ---------------------");
+//        Log.d(TAG, "Scale: "+ getMatrixScaleX());
+//        Log.d(TAG, "TranslateX: " + getTranslateX());
+//        Log.d(TAG, "TranslateY: " + getTranslateY());
+//        Log.d(TAG, "Click x, y: " + x + ", " + y);
+//        Log.d(TAG, "Click Raw x, y: " + rawX + ", " +rawY);
 
 
         // 算出对应的行列位置
         int seatColumn = (int) Math.ceil(rawX / (space + seatWidth));
         int seatRow = (int) Math.ceil(rawY / (space + seatHeight));
 
-        if (seatRow > rows || seatColumn > columns) return null;
+        if (seatRow > rows || seatColumn > columns || seatRow < 0 || seatColumn < 0) return null;
         return seatLayout[seatRow][seatColumn];
     }
 }

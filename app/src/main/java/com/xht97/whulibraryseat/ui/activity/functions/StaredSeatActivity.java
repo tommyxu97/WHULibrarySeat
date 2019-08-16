@@ -79,8 +79,6 @@ public class StaredSeatActivity extends AppCompatActivity implements BaseView {
                     final List<Building> buildings = lists.get(1);
 
                     // 设置可选的日期
-                    // 默认为今天
-                    date = dates.get(0);
                     DateAdapter dateAdapter = new DateAdapter(activity, dates);
                     dateSpinner.setAdapter(dateAdapter);
                     dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -94,6 +92,15 @@ public class StaredSeatActivity extends AppCompatActivity implements BaseView {
 
                         }
                     });
+                    // 默认为今天，但是可选明天时设置为第二天
+                    if (dates.size() == 1) {
+                        date = dates.get(0);
+                    } else if (dates.size() == 2){
+                        date = dates.get(1);
+                        dateSpinner.setSelection(1);
+                    } else {
+                        date = dates.get(0);
+                    }
                 }
             }
 

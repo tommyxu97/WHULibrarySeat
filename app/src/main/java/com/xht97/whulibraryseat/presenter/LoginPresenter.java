@@ -16,7 +16,7 @@ public class LoginPresenter extends LoginContract.AbstractLoginPresenter {
     public void login(final String studentId, final String password) {
 
         if (studentId.length() != 13) {
-            getView().showErrorFocus(LoginActivity.STUDENTID_INPUT, "学号格式不正确");
+            getView().showErrorFocus(LoginActivity.STUDENT_ID_INPUT, "学号格式不正确");
             return;
         }
         if (password.length() == 0) {

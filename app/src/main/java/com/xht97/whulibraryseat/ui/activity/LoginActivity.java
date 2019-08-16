@@ -18,7 +18,7 @@ import com.xht97.whulibraryseat.presenter.LoginPresenter;
 
 public class LoginActivity extends BaseActivity<LoginActivity, LoginPresenter> implements LoginContract.ILoginView{
 
-    public static int STUDENTID_INPUT = 0;
+    public static int STUDENT_ID_INPUT = 0;
     public static int PASSWORD_INPUT = 1;
 
     private EditText studentId;
