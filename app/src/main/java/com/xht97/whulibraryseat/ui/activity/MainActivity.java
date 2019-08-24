@@ -3,6 +3,8 @@ package com.xht97.whulibraryseat.ui.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -185,6 +187,11 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        // 在GC后activity不保存view的状态，防止fragment出错
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case StaticVar.RESULT_LOGIN:
@@ -287,7 +294,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (!targetFragment.isAdded()) {
             // 程序初始化时currentFragment为空需要判断
-            if (currentFragment!=null) {
+            if (currentFragment != null) {
                 fragmentTransaction.hide(currentFragment);
             }
             fragmentTransaction.add(R.id.fl_main, targetFragment, targetFragment.getClass().getName());
