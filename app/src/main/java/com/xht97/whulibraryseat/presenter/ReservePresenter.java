@@ -119,6 +119,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             @Override
             public void onError(String message) {
                 super.onError(message);
+                getView().hideLoading();
                 getView().showMessage(message);
             }
         });
@@ -193,6 +194,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             @Override
             public void onError(String message) {
                 super.onError(message);
+                getView().hideLoading();
                 getView().showMessage(message);
             }
         });
@@ -217,6 +219,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             @Override
             public void onError(String message) {
                 super.onError(message);
+                getView().hideLoading();
                 getView().showMessage(message);
             }
         });
@@ -248,6 +251,7 @@ public class ReservePresenter extends ReserveContract.AbstractReservePresenter {
             @Override
             public void onError(String message) {
                 super.onError(message);
+                getView().hideLoading();
                 getView().showMessage(message);
             }
         });

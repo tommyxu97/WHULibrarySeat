@@ -4,11 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ import com.xht97.whulibraryseat.util.AppDataUtil;
 
 public class MainActivity extends BaseActivity<MainActivity, MainPresenter> implements MainContract.IMainView{
 
+    private static final String TAG = "MainActivity";
+
     /**
      * 用于实现切换FAB功能
      */
@@ -46,7 +49,10 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     MainActivity activity = this;
     FrameLayout emptyView;
 
-    Fragment currentFragment;
+    /**
+     * 主页面的三个Fragment
+     */
+    private int currentFragment = 0;
     ReserveFragment reserveFragment;
     FunctionFragment functionFragment;
     MeFragment meFragment;
@@ -55,9 +61,19 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     FloatingActionButton floatingActionButton;
     ProgressBar progressBar;
 
+    /**
+     * 表示预约界面的UI状态，实现用户点击返回键时对ReserveFragment的界面进行修改
+     */
     private int uiMode = COMMON_MODE;
+
+    /**
+     * 记录用户第一次点击返回键的时间，用于实现双击退出程序
+     */
     private long firstTime;
 
+    /**
+     * 表示用户是否已经登录
+     */
     private boolean isLogin = true;
 
     @Override
@@ -87,15 +103,11 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
 
     @Override
     protected void initData() {
-        // 每次启动程序时，更新本地存储的token
-
+        // 正常情况下启动程序时，更新本地存储的token
         if (!isLogin) {
             return;
         }
         mPresenter.updateToken();
-
-        // DEBUG时为了防止重复登录，不需要刷新token
-        // initFragment();
     }
 
     @Override
@@ -132,30 +144,6 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     }
 
     @Override
-    public void setFabFunction(int type) {
-        switch (type) {
-            case FAB_TO_LOGIN:
-                floatingActionButton.setImageResource(R.drawable.ic_action_login);
-                floatingActionButton.setOnClickListener(new FabToLoginListener());
-                break;
-            case FAB_STOP_SEAT:
-                floatingActionButton.setImageResource(R.drawable.ic_action_stop);
-                floatingActionButton.setOnClickListener(new FabStopUsingSeatListener());
-                break;
-        }
-    }
-
-    @Override
-    public void setUiMode(int mode) {
-        uiMode = mode;
-    }
-
-    @Override
-    public int getUiMode() {
-        return uiMode;
-    }
-
-    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
@@ -187,8 +175,31 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        // 在GC后activity不保存view的状态，防止fragment出错
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            Log.d(TAG, "onCreate savedInstanceState is not null");
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "-> onSaveInstanceState");
+        outState.putInt("currentFragment", currentFragment);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "-> onRestoreInstanceState");
+        super.onRestoreInstanceState(savedInstanceState);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        reserveFragment = (ReserveFragment) fragmentManager.findFragmentByTag("ReserveFragment");
+        functionFragment = (FunctionFragment) fragmentManager.findFragmentByTag("FunctionFragment");
+        meFragment = (MeFragment) fragmentManager.findFragmentByTag("MeFragment");
+        switchFragment(savedInstanceState.getInt("currentFragment"));
+
+        initNavigationListener();
     }
 
     @Override
@@ -227,55 +238,45 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         return super.onOptionsItemSelected(item);
     }
 
-
     /**
-     * 初始化三个碎片
+     * 初始化三个Fragment
      */
     public void initFragment() {
         reserveFragment = new ReserveFragment();
         functionFragment = new FunctionFragment();
         meFragment = new MeFragment();
-        switchFragment(reserveFragment).commitAllowingStateLoss();
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fl_main, reserveFragment, "ReserveFragment");
+        fragmentTransaction.add(R.id.fl_main, functionFragment, "FunctionFragment");
+        fragmentTransaction.add(R.id.fl_main, meFragment, "MeFragment");
+        fragmentTransaction.commit();
+
+        switchFragment(0).commitAllowingStateLoss();
+        navigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
+
+        initNavigationListener();
+    }
+
+    /**
+     * 初始化底部导航栏监听器，需要在初始话Fragment后完成
+     */
+    private void initNavigationListener() {
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        switchFragment(reserveFragment).commit();
-                        if (floatingActionButton.getVisibility() == View.INVISIBLE) {
-                            floatingActionButton.show();
-                        }
+                        switchFragment(0).commit();
+                        floatingActionButton.show();
                         return true;
-                    case R.id.navigation_dashboard:
-                        switchFragment(functionFragment).commit();
-                        if (floatingActionButton.getVisibility() == View.INVISIBLE) {
-                            floatingActionButton.show();
-                        }
+                    case R.id.navigation_functions:
+                        switchFragment(1).commit();
+                        floatingActionButton.show();
                         return true;
-                    case R.id.navigation_notifications:
-                        switchFragment(meFragment).commit();
-                        if (floatingActionButton.getVisibility() == View.VISIBLE) {
-                            floatingActionButton.hide();
-                        }
-                        return true;
-                }
-                return false;
-            }
-        });
-
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        switchFragment(reserveFragment).commit();
-                        return true;
-                    case R.id.navigation_dashboard:
-                        switchFragment(functionFragment).commit();
-                        return true;
-                    case R.id.navigation_notifications:
-                        switchFragment(meFragment).commit();
+                    case R.id.navigation_me:
+                        switchFragment(2).commit();
+                        floatingActionButton.hide();
                         return true;
                 }
                 return false;
@@ -283,31 +284,77 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         });
     }
 
+    /**
+     * 切换主页碎片
+     * @param fragmentId 传入的参数为fragment编号，取值范围[0,2]
+     */
+    private FragmentTransaction switchFragment(int fragmentId) {
+        currentFragment = fragmentId;
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        switch (fragmentId) {
+            case 0:
+                fragmentTransaction.show(reserveFragment);
+                fragmentTransaction.hide(functionFragment);
+                fragmentTransaction.hide(meFragment);
+                break;
+            case 1:
+                fragmentTransaction.hide(reserveFragment);
+                fragmentTransaction.show(functionFragment);
+                fragmentTransaction.hide(meFragment);
+                break;
+            case 2:
+                fragmentTransaction.hide(reserveFragment);
+                fragmentTransaction.hide(functionFragment);
+                fragmentTransaction.show(meFragment);
+                break;
+        }
+        return fragmentTransaction;
+    }
+
+    /**
+     * 返回ReserveFragment对象
+     */
     public ReserveFragment getReserveFragment() {
         return reserveFragment;
     }
 
     /**
-     * 切换主页碎片
+     * 设置预约界面的UI_MODE
      */
-    private FragmentTransaction switchFragment(Fragment targetFragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (!targetFragment.isAdded()) {
-            // 程序初始化时currentFragment为空需要判断
-            if (currentFragment != null) {
-                fragmentTransaction.hide(currentFragment);
-            }
-            fragmentTransaction.add(R.id.fl_main, targetFragment, targetFragment.getClass().getName());
-        } else {
-            fragmentTransaction.hide(currentFragment);
-            fragmentTransaction.show(targetFragment);
-        }
-        currentFragment = targetFragment;
-        return fragmentTransaction;
+    @Override
+    public void setUiMode(int mode) {
+        uiMode = mode;
     }
 
     /**
-     * 实现ReserveFragment里存在当前正在使用的预约时，改变MainActivity中FAB的Action
+     * 获取预约界面的UI_MODE
+     */
+    @Override
+    public int getUiMode() {
+        return uiMode;
+    }
+
+    /**
+     * 设置主页面上的悬浮按钮的功能
+     * @param type FAB_TO_LOGIN与FAB_TO_SEAT 功能分别为跳转至登录页和停止使用座位
+     */
+    @Override
+    public void setFabFunction(int type) {
+        switch (type) {
+            case FAB_TO_LOGIN:
+                floatingActionButton.setImageResource(R.drawable.ic_action_login);
+                floatingActionButton.setOnClickListener(new FabToLoginListener());
+                break;
+            case FAB_STOP_SEAT:
+                floatingActionButton.setImageResource(R.drawable.ic_action_stop);
+                floatingActionButton.setOnClickListener(new FabStopUsingSeatListener());
+                break;
+        }
+    }
+
+    /**
+     * 悬浮按钮跳转至登录页的监听器
      */
     private class FabToLoginListener implements View.OnClickListener {
         @Override
@@ -317,6 +364,9 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         }
     }
 
+    /**
+     * 悬浮按钮停止使用座位的监听器
+     */
     private class FabStopUsingSeatListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {

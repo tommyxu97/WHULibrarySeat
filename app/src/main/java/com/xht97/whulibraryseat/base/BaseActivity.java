@@ -19,7 +19,10 @@ public abstract class BaseActivity<V, T extends BasePresenter<V>> extends AppCom
 
         initView();
 
-        initData();
+        // 当正常启动activity时初始化数据
+        if (savedInstanceState == null) {
+            initData();
+        }
 
     }
 
