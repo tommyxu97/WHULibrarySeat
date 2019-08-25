@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
             return;
         }
         mPresenter.updateToken();
+        //initFragment();
     }
 
     @Override
