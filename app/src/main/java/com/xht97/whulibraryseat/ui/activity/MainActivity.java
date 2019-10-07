@@ -251,7 +251,8 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
         fragmentTransaction.add(R.id.fl_main, reserveFragment, "ReserveFragment");
         fragmentTransaction.add(R.id.fl_main, functionFragment, "FunctionFragment");
         fragmentTransaction.add(R.id.fl_main, meFragment, "MeFragment");
-        fragmentTransaction.commit();
+        // Fix bug: 防止用户第一次登录导致的闪退问题
+        fragmentTransaction.commitAllowingStateLoss();
 
         switchFragment(0).commitAllowingStateLoss();
         navigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
@@ -344,12 +345,16 @@ public class MainActivity extends BaseActivity<MainActivity, MainPresenter> impl
     public void setFabFunction(int type) {
         switch (type) {
             case FAB_TO_LOGIN:
+                floatingActionButton.hide();
                 floatingActionButton.setImageResource(R.drawable.ic_action_login);
                 floatingActionButton.setOnClickListener(new FabToLoginListener());
+                floatingActionButton.show();
                 break;
             case FAB_STOP_SEAT:
+                floatingActionButton.hide();
                 floatingActionButton.setImageResource(R.drawable.ic_action_stop);
                 floatingActionButton.setOnClickListener(new FabStopUsingSeatListener());
+                floatingActionButton.show();
                 break;
         }
     }
